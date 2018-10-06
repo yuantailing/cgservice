@@ -6,8 +6,10 @@ services:
     build: apache2
     ports:
       - "80:80"
+      - "443:443"
     volumes:
       - /srv/ftp:/srv/ftp:ro
+      - /etc/letsencrypt:/etc/letsencrypt:ro
     restart: unless-stopped
 
   vsftpd:

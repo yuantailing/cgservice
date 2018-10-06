@@ -2,10 +2,10 @@ FROM cscg/base
 
 RUN apt-get update && \
 	apt-get install --no-install-recommends -y openvpn iptables && \
-    rm -rf /var/lib/apt/lists/*
+	rm -rf /var/lib/apt/lists/*
 
 RUN pip install requests && \
-    rm -r ~/.cache/pip
+	rm -r ~/.cache/pip
 
 COPY conf /etc/openvpn/cscg/conf
 COPY entrypoint.sh /entrypoint.sh

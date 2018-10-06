@@ -22,11 +22,14 @@ Run All services in a docker compose.
 
 ### apache2
 
+1. Copy *apache2/conf/sites-available.sample/* to *apache2/conf/sites-available/* and edit then.
+1. Before certificates are issued, we should disable *001-cscg-le-ssl* and *002-oslab-le-ssl* provisionally.
 1. Build and run.
+1. When certificates have been issued, we can enable *001-cscg-le-ssl* and *002-oslab-le-ssl*, and rewrite HTTP to HTTPS (edit *apache2/conf/sites-available/*).
 
 ### vsftpd
 
-1. Copy *vsftpd/conf/vusers.txt.sample* to *vsftpd/conf/vusers.txt.sample* and edit it.
+1. Copy *vsftpd/conf/vusers.txt.sample* to *vsftpd/conf/vusers.txt* and edit it.
 1. Edit config files in *vsftpd/conf/vsftpd_user_conf/*.
 1. Build and run.
 
@@ -47,6 +50,13 @@ Run All services in a docker compose.
 1. Create *openvpn/conf/server.key* (see *openvpn/conf/server.key.sample* for the format).
 1. Copy *openvpn/conf/settings.py.sample* to *openvpn/conf/settings.py* and edit it (fill `CLIENT_SECRET`).
 1. Build and run.
+
+### letsencrypt
+
+1. Copy *letsencrypt/sites.env.sample* to *letsencrypt/sites.env* and edit it.
+1. Build and run.
+
+Letsencrypt is not a part of docker-compose, it should be run in cycles. Apache2 should be running when renewing certificates.
 
 ## todo
 
