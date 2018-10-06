@@ -6,11 +6,19 @@ Run All services in a docker compose.
 
 ### overall
 
-Please inall [docker](https://docs.docker.com/install/linux/docker-ce/debian/) and [docker-compose](https://docs.docker.com/compose/install/#install-compose).
+1. Please inall [docker](https://docs.docker.com/install/linux/docker-ce/debian/) and [docker-compose](https://docs.docker.com/compose/install/#install-compose).
 
-```sh
-$ docker-compose up --build -d
-```
+2. Build base image.
+
+   ```sh
+   $ cd base && ./build.sh
+   ```
+
+3. Run all services in docker-compose.
+
+   ```sh
+   $ docker-compose up --build -d
+   ```
 
 ### apache2
 
