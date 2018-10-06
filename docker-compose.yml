@@ -1,0 +1,44 @@
+version: '2'
+
+services:
+
+  apache2:
+    build: apache2
+    ports:
+      - "80:80"
+    volumes:
+      - /srv/ftp:/srv/ftp:ro
+    restart: unless-stopped
+
+  vsftpd:
+    build: vsftpd
+    volumes:
+      - /srv/ftp:/srv/ftp
+    network_mode: host
+    restart: unless-stopped
+
+  pptp:
+    build: pptp
+    ports:
+      - "1723:1723"
+    privileged: true
+    restart: unless-stopped
+
+  l2tp:
+    image: hwdsl2/ipsec-vpn-server
+    env_file:
+      - l2tp/vpn.env
+    ports:
+      - "500:500/udp"
+      - "4500:4500/udp"
+    volumes:
+      - /lib/modules:/lib/modules:ro
+    privileged: true
+    restart: unless-stopped
+
+  openvpn:
+    build: openvpn
+    ports:
+      - "1194:1194/udp"
+    privileged: true
+    restart: unless-stopped

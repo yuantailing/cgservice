@@ -1,0 +1,4 @@
+local_root=/srv/ftp/cscg
+write_enable=YES
+download_enable=YES
+# hide_ids=YES

@@ -1,0 +1,14 @@
+#ppp /usr/sbin/pppd
+option /etc/ppp/pptpd-options
+#debug
+# stimeout 10
+#noipparam
+logwtmp
+#bcrelay eth1
+#delegate
+#connections 100
+#localip 192.168.0.1
+#remoteip 192.168.0.234-238,192.168.0.245
+# or
+#localip 192.168.0.234-238,192.168.0.245
+#remoteip 192.168.1.234-238,192.168.1.245
