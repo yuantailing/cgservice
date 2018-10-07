@@ -7,10 +7,8 @@ RUN apt-get update && \
 COPY conf/sites-available/*.conf /etc/apache2/sites-available/
 COPY conf/options-ssl-apache.conf /opt/letsencrypt/options-ssl-apache.conf
 
-RUN a2enmod proxy proxy_http rewrite ssl && \
-	a2ensite 001-cscg 002-oslab 003-cgserver
-
-RUN a2ensite 001-cscg-le-ssl 002-oslab-le-ssl 003-cgserver-le-ssl
+RUN a2enmod ssl && \
+	a2ensite 000-default 000-default-le-ssl
 
 EXPOSE 80
 EXPOSE 443

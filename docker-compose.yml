@@ -20,8 +20,20 @@ services:
       - /srv/ftp:/srv/ftp
     network_mode: host
 
+  netredirect:
+    build: netredirect
+    restart: unless-stopped
+    volumes:
+      - letsencrypt:/etc/letsencrypt:ro
+    networks:
+      - pptp
+      - l2tp
+      - openvpn
+
   pptp:
     build: pptp
+    depends_on:
+      - netredirect
     restart: unless-stopped
     networks:
       - pptp
@@ -31,6 +43,8 @@ services:
 
   l2tp:
     image: hwdsl2/ipsec-vpn-server
+    depends_on:
+      - netredirect
     restart: unless-stopped
     env_file:
       - l2tp/vpn.env
@@ -45,6 +59,8 @@ services:
 
   openvpn:
     build: openvpn
+    depends_on:
+      - netredirect
     restart: unless-stopped
     networks:
       - openvpn
@@ -61,12 +77,10 @@ services:
     env_file:
       - mysql/password.env
     volumes:
-      - /var/lib/mysql:/var/lib/mysql
+      - mysql:/var/lib/mysql
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
-    depends_on:
-      - mysql
     restart: always
     networks:
       - frontend
@@ -92,7 +106,8 @@ services:
     volumes:
       - /srv/ftp:/srv/ftp
       - letsencrypt:/etc/letsencrypt
-    network_mode: none
+    networks:
+      - letsencrypt
 
 networks:
   frontend:
@@ -105,8 +120,9 @@ networks:
 
   openvpn:
 
+  letsencrypt:
 
 volumes:
   letsencrypt:
 
-  ftp:
+  mysql:

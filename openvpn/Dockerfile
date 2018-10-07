@@ -1,7 +1,7 @@
 FROM cscg/base
 
 RUN apt-get update && \
-	apt-get install --no-install-recommends -y openvpn iptables && \
+	apt-get install --no-install-recommends -y openvpn iptables dnsutils && \
 	rm -rf /var/lib/apt/lists/*
 
 RUN pip install requests && \

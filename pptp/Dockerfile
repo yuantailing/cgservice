@@ -1,7 +1,7 @@
 FROM cscg/base
 
 RUN apt-get update && \
-	apt-get install --no-install-recommends -y pptpd iptables && \
+	apt-get install --no-install-recommends -y pptpd iptables dnsutils && \
 	rm -rf /var/lib/apt/lists/*
 
 COPY conf/pptpd.conf /etc/pptpd.conf

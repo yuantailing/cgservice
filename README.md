@@ -61,7 +61,7 @@ Letsencrypt is not a part of docker-compose, it should be run in cycles. Apache2
 
 ### mysql
 
-1. Copy *mysql/password.env.sample* to *mysql/password.env* and edit it. Note that the password set on the first run affects.
+1. Copy *mysql/password.env.sample* to *mysql/password.env* and edit it. Note that only the password set on the first run affects.
 1. Run.
 
 ### phpmyadmin
@@ -76,14 +76,15 @@ Letsencrypt is not a part of docker-compose, it should be run in cycles. Apache2
 1. Build and run.
 1. Run `docker-compose exec cgserver python3 manage.py migrate` to initialize database.
 1. Run `docker-compose exec cgserver python3 manage.py createsuperuser` to a super user, who can login to Django administration.
-1. Login to Django administration (URI is /admin/) and add server configs.
+1. Login to Django administration (URI is /admin/) and add some server configs.
 
 ## todo
 
 - [x] Support HTTPS for apache2. Mount cert files into apache2 container, and add a service to renew certifications.
 - [x] Add cgserver service.
-- [x] Handle tatic files of cgserver.
+- [x] Handle static files in cgserver.
 - [ ] Redirect traffic to *net.tsinghua.edu.cn* to another page by DNAT.
-- [ ] Put ftp into a Docker volume, so does mysql.
+- [ ] Put ftp into a Docker volume, ~~so does mysql~~.
 - [ ] Add a callback URL to GitHub OAuth.
-- [ ] OpenVPN protocol TCP.
+- [ ] Add OpenVPN protocol TCP.
+- [ ] Optimize default settings of apache2.
