@@ -1,7 +1,7 @@
 FROM cscg/base
 
 RUN apt-get update && \
-	apt-get install --no-install-recommends -y default-libmysqlclient-dev && \
+	apt-get install --no-install-recommends -y apache2 default-libmysqlclient-dev && \
 	rm -rf /var/lib/apt/lists/*
 
 RUN pip3 install setuptools && \
@@ -15,7 +15,14 @@ RUN git clone https://github.com/yuantailing/cgserver.git /opt/cgserver && \
 	rm -r ~/.cache/pip
 
 COPY conf/settings.py /opt/cgserver/cgserver/cgserver/settings.py
+COPY conf/000-default.conf /etc/apache2/sites-available/000-default.conf
+COPY /runscript.sh /runscript.sh
 
 WORKDIR /opt/cgserver/cgserver
+
+RUN a2enmod proxy proxy_http
+
+RUN python3 manage.py collectstatic
+
 EXPOSE 80
-CMD ["python3", "manage.py", "runserver", "0.0.0.0:80"]
+CMD /runscript.sh
