@@ -59,3 +59,7 @@ services:
     restart: always
     environment:
       PMA_HOST: mysql
+
+  cgserver:
+    build: cgserver
+    restart: unless-stopped

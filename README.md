@@ -23,9 +23,9 @@ Run All services in a docker composer.
 ### apache2
 
 1. Copy *apache2/conf/sites-available.sample/* to *apache2/conf/sites-available/* and edit then.
-1. Before certificates are issued, we should disable *001-cscg-le-ssl* and *002-oslab-le-ssl* provisionally.
+1. Before certificates are issued, we should disable *001-cscg-le-ssl*, *002-oslab-le-ssl*, and so on, provisionally.
 1. Build and run.
-1. When certificates have been issued, we can enable *001-cscg-le-ssl* and *002-oslab-le-ssl*, and rewrite HTTP to HTTPS (edit *apache2/conf/sites-available/*).
+1. When certificates have been issued, we can enable *001-cscg-le-ssl*, *002-oslab-le-ssl*, and so on, and rewrite HTTP to HTTPS (edit *apache2/conf/sites-available/*).
 
 ### vsftpd
 
@@ -67,8 +67,18 @@ Letsencrypt is not a part of docker-compose, it should be run in cycles. Apache2
 ### phpmyadmin
 
 1. Run.
+1. You can login to phpmyadmin in the default website (URI is /phpmyadmin/).
+
+### cgserver
+
+1. Create a database and a user in database.
+1. Copy *cgserver/conf/settings.py.sample* to *cgserver/conf/settings.py* and edit it (fill `SECRET_KEY`, `DEBUG`, `ALLOWED_HOSTS`, `DATABASES`, `GITHUB_CLIENT_SECRET`, `GITHUB_PERSONAL_ACCESS_TOKEN` and `VPN_CLIENT_SECRET`).
+1. Build and run.
+1. Run `docker-compose exec cgserver python3 manage.py migrate` to initialize database.
+1. Run `docker-compose exec cgserver python3 manage.py createsuperuser` to a super user, who can login to Django administration.
+1. Login to Django administration (URI is /admin/) and add server configs.
 
 ## todo
 
-1. Support HTTPS for apache2. Mount cert files into apache2 container, and add a service to renew certifications.
-1. Add cgserver service.
+- [x] Support HTTPS for apache2. Mount cert files into apache2 container, and add a service to renew certifications.
+- [x] Add cgserver service.
