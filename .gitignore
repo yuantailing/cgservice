@@ -1,5 +1,6 @@
 /apache2/conf/sites-available/
 /vsftpd/conf/vusers.txt
+/netredirect/conf/sites-available
 /pptp/conf/chap-secrets
 /l2tp/vpn.env
 /openvpn/conf/settings.py

@@ -1,6 +1,6 @@
 # cgservice
 
-Run All services in a docker composer.
+Run all services in a docker composer.
 
 ## usage
 
@@ -8,13 +8,13 @@ Run All services in a docker composer.
 
 1. Please inall [docker](https://docs.docker.com/install/linux/docker-ce/debian/) and [docker-compose](https://docs.docker.com/compose/install/#install-compose).
 
-2. Build base image.
+1. Build the base image.
 
    ```sh
    $ cd base && ./build.sh
    ```
 
-3. Run all services in docker-compose.
+1. Run all services in docker-compose.
 
    ```sh
    $ docker-compose up --build -d
@@ -22,16 +22,21 @@ Run All services in a docker composer.
 
 ### apache2
 
-1. Copy *apache2/conf/sites-available.sample/* to *apache2/conf/sites-available/* and edit then.
-1. Before certificates are issued, we should disable *001-cscg-le-ssl*, *002-oslab-le-ssl*, and so on, provisionally.
+1. Copy *apache2/conf/sites-available.sample/* to *apache2/conf/sites-available/* and edit then (fill `ServerName`).
 1. Build and run.
-1. When certificates have been issued, we can enable *001-cscg-le-ssl*, *002-oslab-le-ssl*, and so on, and rewrite HTTP to HTTPS (edit *apache2/conf/sites-available/*).
+1. After certificates are issued, we can further edit configs in *apache2/conf/sites-available/*, enable SSL, and rewrite HTTP to HTTPS.
 
 ### vsftpd
 
 1. Copy *vsftpd/conf/vusers.txt.sample* to *vsftpd/conf/vusers.txt* and edit it.
 1. Edit config files in *vsftpd/conf/vsftpd_user_conf/*.
 1. Build and run.
+
+### netredirect
+
+1. Copy *netredirect/conf/sites-available.sample/* to *netredirect/conf/sites-available/*.
+1. Build and run.
+1. After certificates are issued, we can further edit configs in *netredirect/conf/sites-available/*, enable SSL, and rewrite HTTP to HTTPS.
 
 ### pptp
 
@@ -55,9 +60,9 @@ Run All services in a docker composer.
 
 1. Copy *letsencrypt/sites.env.sample* to *letsencrypt/sites.env* and edit it.
 1. Build and run.
-1. Reload apache2 certificates are updated by running `docker-compose exec apache2 apachectl -k graceful`.
+1. Update apache2 config files and reload apache2 by running `docker-compose exec apache2 apachectl -k graceful` and `docker-compose exec netredirect apachectl -k graceful`.
 
-Letsencrypt is not a part of docker-compose, it should be run in cycles. Apache2 should be running when renewing certificates.
+Each certificate expires in about 3 months, so letsencrypt should be run in cycles to renew certificates. Apache2 should be running when renewing certificates.
 
 ### mysql
 
@@ -67,7 +72,7 @@ Letsencrypt is not a part of docker-compose, it should be run in cycles. Apache2
 ### phpmyadmin
 
 1. Run.
-1. You can login to phpmyadmin in the default website (URI is /phpmyadmin/).
+1. You can login to phpmyadmin in the default website (usually you can visit it by IP, and URI is /phpmyadmin/).
 
 ### cgserver
 
@@ -87,4 +92,5 @@ Letsencrypt is not a part of docker-compose, it should be run in cycles. Apache2
 - [ ] Put ftp into a Docker volume, ~~so does mysql~~.
 - [ ] Add a callback URL to GitHub OAuth in service cgserver.
 - [ ] Add OpenVPN protocol TCP.
-- [ ] Make it easier to config apache2.
+- [x] Make it easier to config apache2.
+- [ ] More friendly netredirect.
