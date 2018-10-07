@@ -7,7 +7,7 @@ RUN apt-get update && \
 COPY conf/sites-available/*.conf /etc/apache2/sites-available/
 COPY conf/options-ssl-apache.conf /opt/letsencrypt/options-ssl-apache.conf
 
-RUN a2enmod rewrite ssl && \
+RUN a2enmod proxy proxy_http rewrite ssl && \
 	a2ensite 001-cscg 002-oslab
 
 RUN a2ensite 001-cscg-le-ssl 002-oslab-le-ssl

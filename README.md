@@ -1,6 +1,6 @@
 # cgservice
 
-Run All services in a docker compose.
+Run All services in a docker composer.
 
 ## usage
 
@@ -55,8 +55,18 @@ Run All services in a docker compose.
 
 1. Copy *letsencrypt/sites.env.sample* to *letsencrypt/sites.env* and edit it.
 1. Build and run.
+1. Reload apache2 certificates are updated by running `docker-compose exec apache2 apachectl -k graceful`.
 
 Letsencrypt is not a part of docker-compose, it should be run in cycles. Apache2 should be running when renewing certificates.
+
+### mysql
+
+1. Copy *mysql/password.env.sample* to *mysql/password.env* and edit it. Note that the password set on the first run affects.
+1. Run.
+
+### phpmyadmin
+
+1. Run.
 
 ## todo
 

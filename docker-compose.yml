@@ -4,30 +4,31 @@ services:
 
   apache2:
     build: apache2
+    restart: unless-stopped
     ports:
       - "80:80"
       - "443:443"
     volumes:
       - /srv/ftp:/srv/ftp:ro
       - /etc/letsencrypt:/etc/letsencrypt:ro
-    restart: unless-stopped
 
   vsftpd:
     build: vsftpd
+    restart: unless-stopped
     volumes:
       - /srv/ftp:/srv/ftp
     network_mode: host
-    restart: unless-stopped
 
   pptp:
     build: pptp
+    restart: unless-stopped
     ports:
       - "1723:1723"
     privileged: true
-    restart: unless-stopped
 
   l2tp:
     image: hwdsl2/ipsec-vpn-server
+    restart: unless-stopped
     env_file:
       - l2tp/vpn.env
     ports:
@@ -36,11 +37,25 @@ services:
     volumes:
       - /lib/modules:/lib/modules:ro
     privileged: true
-    restart: unless-stopped
 
   openvpn:
     build: openvpn
+    restart: unless-stopped
     ports:
       - "1194:1194/udp"
     privileged: true
-    restart: unless-stopped
+
+  mysql:
+    image: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    env_file:
+      - mysql/password.env
+    volumes:
+      - /var/lib/mysql:/var/lib/mysql
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    restart: always
+    environment:
+      PMA_HOST: mysql
