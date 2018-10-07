@@ -82,3 +82,8 @@ Letsencrypt is not a part of docker-compose, it should be run in cycles. Apache2
 
 - [x] Support HTTPS for apache2. Mount cert files into apache2 container, and add a service to renew certifications.
 - [x] Add cgserver service.
+- [ ] Handle tatic files of cgserver.
+- [ ] Redirect traffic to *net.tsinghua.edu.cn* to another page by DNAT.
+- [ ] Put ftp into a Docker volume, so does mysql.
+- [ ] Add a callback URL to GitHub OAuth.
+- [ ] OpenVPN protocol TCP.

@@ -1,7 +1,6 @@
-version: '2'
+version: '3'
 
 services:
-
   apache2:
     build: apache2
     restart: unless-stopped
@@ -10,7 +9,7 @@ services:
       - "443:443"
     volumes:
       - /srv/ftp:/srv/ftp:ro
-      - /etc/letsencrypt:/etc/letsencrypt:ro
+      - letsencrypt:/etc/letsencrypt:ro
 
   vsftpd:
     build: vsftpd
@@ -56,10 +55,29 @@ services:
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
+    depends_on:
+      - mysql
     restart: always
     environment:
       PMA_HOST: mysql
 
   cgserver:
     build: cgserver
+    depends_on:
+      - mysql
     restart: unless-stopped
+
+  letsencrypt:
+    build: letsencrypt
+    depends_on:
+      - apache2
+    env_file:
+      - letsencrypt/sites.env
+    volumes:
+      - /srv/ftp:/srv/ftp
+      - letsencrypt:/etc/letsencrypt
+
+volumes:
+  letsencrypt:
+
+  ftp:
