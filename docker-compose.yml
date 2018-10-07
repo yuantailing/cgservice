@@ -42,7 +42,7 @@ services:
     privileged: true
 
   l2tp:
-    image: hwdsl2/ipsec-vpn-server
+    build: l2tp
     depends_on:
       - netredirect
     restart: unless-stopped

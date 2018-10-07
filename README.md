@@ -42,7 +42,7 @@ Run All services in a docker composer.
 
 1. Load the IPsec af_key kernel module on the Docker host: `sudo modprobe af_key`.
 1. Copy *l2tp/vpn.env.sample* to *l2tp/vpn.env* and edit it.
-1. Run.
+1. Build and run.
 
 ### openvpn
 
@@ -83,8 +83,8 @@ Letsencrypt is not a part of docker-compose, it should be run in cycles. Apache2
 - [x] Support HTTPS for apache2. Mount cert files into apache2 container, and add a service to renew certifications.
 - [x] Add cgserver service.
 - [x] Handle static files in cgserver.
-- [ ] Redirect traffic to *net.tsinghua.edu.cn* to another page by DNAT.
+- [x] Redirect traffic to *net.tsinghua.edu.cn* to another page by DNAT.
 - [ ] Put ftp into a Docker volume, ~~so does mysql~~.
-- [ ] Add a callback URL to GitHub OAuth.
+- [ ] Add a callback URL to GitHub OAuth in service cgserver.
 - [ ] Add OpenVPN protocol TCP.
-- [ ] Optimize default settings of apache2.
+- [ ] Make it easier to config apache2.
