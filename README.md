@@ -2,11 +2,24 @@
 
 Run all services in a docker composer.
 
+## 概述
+
+1. vsftpd 是 FTP 服务，用于上传文件到网站目录，开放 FTP 端口
+1. apache2 用于托管网站（根据域名区分），开放 HTTP、HTTPS 端口
+1. pptp、l2tp、openvpn 是几个 VPN 服务，开放各自的端口
+1. netredirect 用于 VPN 重定向，VPN 把目的地址为 net.tsinghua.edu.cn 的流量重定向到这里，避免用户通过 VPN 意外“断开连接”
+1. mysql 是内网数据库服务
+1. phpmyadmin 是 web 端管理 mysql 数据库用的，用 apache2 转发
+1. cgserver 是另一项 web 服务，并提供 openvpn 的认证。cgserver 也用 apache2 转发
+1. letsencrypt 用于签署 SSL 证书，以便 apache2 能用 HTTPS
+1. 网络做了隔离，前端的 apache2 不能跟后端的 mysql 通信，各个 VPN 之间也不能通过内网通信
+1. docker-compose 用于构建和管理这些服务，一键启动和停止整批服务
+
 ## usage
 
 ### overall
 
-1. Please inall [docker](https://docs.docker.com/install/linux/docker-ce/debian/) and [docker-compose](https://docs.docker.com/compose/install/#install-compose).
+1. Please inall [docker](https://docs.docker.com/install/linux/docker-ce/debian/) and [docker-compose](https://docs.docker.com/compose/install/).
 
 1. Build the base image.
 
@@ -93,4 +106,6 @@ Each certificate expires in about 3 months, so letsencrypt should be run in cycl
 - [ ] Add a callback URL to GitHub OAuth in service cgserver.
 - [ ] Add OpenVPN protocol TCP.
 - [x] Make it easier to config apache2.
+- [ ] Make it easier to config openvpn.
+- [ ] Add an automate script to generate configs (then `docker-compose up` will work except for SSL issue and weak password).
 - [ ] More friendly netredirect.
