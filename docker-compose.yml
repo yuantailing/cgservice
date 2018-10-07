@@ -4,12 +4,14 @@ services:
   apache2:
     build: apache2
     restart: unless-stopped
-    ports:
-      - "80:80"
-      - "443:443"
     volumes:
       - /srv/ftp:/srv/ftp:ro
       - letsencrypt:/etc/letsencrypt:ro
+    networks:
+      - frontend
+    ports:
+      - "80:80"
+      - "443:443"
 
   vsftpd:
     build: vsftpd
@@ -21,6 +23,8 @@ services:
   pptp:
     build: pptp
     restart: unless-stopped
+    networks:
+      - pptp
     ports:
       - "1723:1723"
     privileged: true
@@ -30,16 +34,20 @@ services:
     restart: unless-stopped
     env_file:
       - l2tp/vpn.env
+    volumes:
+      - /lib/modules:/lib/modules:ro
+    networks:
+      - l2tp
     ports:
       - "500:500/udp"
       - "4500:4500/udp"
-    volumes:
-      - /lib/modules:/lib/modules:ro
     privileged: true
 
   openvpn:
     build: openvpn
     restart: unless-stopped
+    networks:
+      - openvpn
     ports:
       - "1194:1194/udp"
     privileged: true
@@ -48,6 +56,8 @@ services:
     image: mysql
     command: --default-authentication-plugin=mysql_native_password
     restart: always
+    networks:
+      - backend
     env_file:
       - mysql/password.env
     volumes:
@@ -58,6 +68,9 @@ services:
     depends_on:
       - mysql
     restart: always
+    networks:
+      - frontend
+      - backend
     environment:
       PMA_HOST: mysql
 
@@ -66,6 +79,9 @@ services:
     depends_on:
       - mysql
     restart: unless-stopped
+    networks:
+      - frontend
+      - backend
 
   letsencrypt:
     build: letsencrypt
@@ -76,6 +92,19 @@ services:
     volumes:
       - /srv/ftp:/srv/ftp
       - letsencrypt:/etc/letsencrypt
+    network_mode: none
+
+networks:
+  frontend:
+
+  backend:
+
+  pptp:
+
+  l2tp:
+
+  openvpn:
+
 
 volumes:
   letsencrypt:
