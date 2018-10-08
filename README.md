@@ -15,23 +15,66 @@ Run all services in a docker composer.
 1. 网络做了隔离，前端的 apache2 不能跟后端的 mysql 通信，各个 VPN 之间也不能通过内网通信
 1. docker-compose 用于构建和管理这些服务，一键启动和停止整批服务
 
-## usage
+## Usage
 
-### overall
-
+### Quick start
 1. Please inall [docker](https://docs.docker.com/install/linux/docker-ce/debian/) and [docker-compose](https://docs.docker.com/compose/install/).
 
 1. Build the base image.
 
    ```sh
-   $ cd base && ./build.sh
+   $ base/build.sh
    ```
 
-1. Run all services in docker-compose.
+1. Copy sample configs and make secret config files not globally visible.
+
+   ```sh
+   $ cp -r apache2/conf/sites-available.sample/ apache2/conf/sites-available/ && \
+       cp vsftpd/conf/vusers.txt.sample vsftpd/conf/vusers.txt && \
+       cp -r netredirect/conf/sites-available.sample netredirect/conf/sites-available && \
+       cp pptp/conf/chap-secrets.sample pptp/conf/chap-secrets && \
+       cp l2tp/vpn.env.sample l2tp/vpn.env && \
+       cp openvpn/conf/settings.py.sample openvpn/conf/settings.py && \
+       touch openvpn/conf/server.key && \
+       cp mysql/password.env.sample mysql/password.env && \
+       cp cgserver/conf/settings.py.sample cgserver/conf/settings.py && \
+       cp letsencrypt/sites.env.sample letsencrypt/sites.env
+
+	$ chmod 600 vsftpd/conf/vusers.txt pptp/conf/chap-secrets l2tp/vpn.env \
+	   openvpn/conf/settings.py openvpn/conf/server.key mysql/password.env \
+	   cgserver/conf/settings.py
+   ```
+
+1. Up docker composer
+
+   ```sh
+   $ docker-compose up --build
+   ```
+
+  You can also up docker-compose in daemon mode
 
    ```sh
    $ docker-compose up --build -d
    ```
+
+### What's next
+
+You should edit configs to solve following issues:
+
+1. Apache2 `ServerName` is not properly configured, so you will always visit the default website.
+1. Ensure ftp user root exists and have the proper owner, or vsftpd will fail.
+1. The default vsftpd passwords are weak and public available.
+1. The default pptp password and l2tp password are weak and public available.
+1. OpenVPN key file is broken and openvpn will fail. Please use the correct key file.
+1. OpenVPN `CLIENT_SECRET` is incorrect so it cannot communicate with cgserver.
+1. The default mysql root password is unsafe, please login to phpmyadmin and change it.
+1. Create a database and db user, and then config cgserver to the correct database.
+1. Futher configure cgserver.
+1. Letsencrypt domain name is not properly configured, so it's failed to issue SSL certificates.
+1. Edit apache2 *\*-le-ssl.conf* to use SSL, and edit HTTP configs to redirect to HTTPS.
+1. Add a service to run letsencrypt in cycle to renew certificates.
+
+## Services
 
 ### apache2
 
@@ -43,6 +86,7 @@ Run all services in a docker composer.
 
 1. Copy *vsftpd/conf/vusers.txt.sample* to *vsftpd/conf/vusers.txt* and edit it.
 1. Edit config files in *vsftpd/conf/vsftpd_user_conf/*.
+1. Ensure user roots (*/srv/ftp/cscg* and */srv/ftp/oslab*) exists and have the proper owner (UID is 10021 and GID is 10021).
 1. Build and run.
 
 ### netredirect
@@ -69,14 +113,6 @@ Run all services in a docker composer.
 1. Copy *openvpn/conf/settings.py.sample* to *openvpn/conf/settings.py* and edit it (fill `CLIENT_SECRET`).
 1. Build and run.
 
-### letsencrypt
-
-1. Copy *letsencrypt/sites.env.sample* to *letsencrypt/sites.env* and edit it.
-1. Build and run.
-1. Update apache2 config files and reload apache2 by running `docker-compose exec apache2 apachectl -k graceful` and `docker-compose exec netredirect apachectl -k graceful`.
-
-Each certificate expires in about 3 months, so letsencrypt should be run in cycles to renew certificates. Apache2 should be running when renewing certificates.
-
 ### mysql
 
 1. Copy *mysql/password.env.sample* to *mysql/password.env* and edit it. Note that only the password set on the first run affects.
@@ -96,16 +132,25 @@ Each certificate expires in about 3 months, so letsencrypt should be run in cycl
 1. Run `docker-compose exec cgserver python3 manage.py createsuperuser` to a super user, who can login to Django administration.
 1. Login to Django administration (URI is /admin/) and add some server configs.
 
-## todo
+### letsencrypt
+
+1. Copy *letsencrypt/sites.env.sample* to *letsencrypt/sites.env* and edit it.
+1. Build and run.
+1. Update apache2 config files and reload apache2 by running `docker-compose exec apache2 apachectl -k graceful` and `docker-compose exec netredirect apachectl -k graceful`.
+
+Each certificate expires in about 3 months, so letsencrypt should be run in cycles to renew certificates. Apache2 should be running when renewing certificates.
+
+## Todo
 
 - [x] Support HTTPS for apache2. Mount cert files into apache2 container, and add a service to renew certifications.
 - [x] Add cgserver service.
 - [x] Handle static files in cgserver.
 - [x] Redirect traffic to *net.tsinghua.edu.cn* to another page by DNAT.
 - [ ] Put ftp into a Docker volume, ~~so does mysql~~.
-- [ ] Add a callback URL to GitHub OAuth in service cgserver.
+- [ ] In cgserver, add a callback URL to GitHub OAuth to allow multiple instances use the same OAuth App.
 - [ ] Add OpenVPN protocol TCP.
 - [x] Make it easier to config apache2.
 - [ ] Make it easier to config openvpn.
-- [ ] Add an automate script to generate configs (then `docker-compose up` will work except for SSL issue and weak password).
-- [ ] More friendly netredirect.
+- [ ] VPN server secret is not required if we use intranet to communicate with cgserver.
+- [x] Add an automate script to generate configs (just copy sample configs).
+- [ ] Make netredirect more friendly.
