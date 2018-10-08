@@ -207,31 +207,6 @@ cat > /etc/ipsec.d/passwd <<EOF
 $VPN_USER:$VPN_PASSWORD_ENC:xauth-psk
 EOF
 
-# Update sysctl settings
-SYST='/sbin/sysctl -e -q -w'
-if [ "$(getconf LONG_BIT)" = "64" ]; then
-  SHM_MAX=68719476736
-  SHM_ALL=4294967296
-else
-  SHM_MAX=4294967295
-  SHM_ALL=268435456
-fi
-$SYST kernel.msgmnb=65536
-$SYST kernel.msgmax=65536
-$SYST kernel.shmmax=$SHM_MAX
-$SYST kernel.shmall=$SHM_ALL
-$SYST net.ipv4.ip_forward=1
-$SYST net.ipv4.conf.all.accept_source_route=0
-$SYST net.ipv4.conf.all.accept_redirects=0
-$SYST net.ipv4.conf.all.send_redirects=0
-$SYST net.ipv4.conf.all.rp_filter=0
-$SYST net.ipv4.conf.default.accept_source_route=0
-$SYST net.ipv4.conf.default.accept_redirects=0
-$SYST net.ipv4.conf.default.send_redirects=0
-$SYST net.ipv4.conf.default.rp_filter=0
-$SYST net.ipv4.conf.eth0.send_redirects=0
-$SYST net.ipv4.conf.eth0.rp_filter=0
-
 # Create IPTables rules
 iptables -I INPUT 1 -p udp --dport 1701 -m policy --dir in --pol none -j DROP
 iptables -I INPUT 2 -m conntrack --ctstate INVALID -j DROP
@@ -254,7 +229,7 @@ iptables -t nat -I POSTROUTING -s "$L2TP_NET" -o eth+ -j MASQUERADE
 
 # redirect net.tsinghua.edu.cn
 netredirect=$(nslookup netredirect | awk -F': ' 'NR==6 {print $2}')
-iptables -t nat -A PREROUTING -d net.tsinghua.edu.cn -j DNAT --to ${netredirect}
+iptables -t nat -A PREROUTING -d 166.111.204.120 -j DNAT --to ${netredirect}
 
 # Update file attributes
 chmod 600 /etc/ipsec.secrets /etc/ppp/chap-secrets /etc/ipsec.d/passwd

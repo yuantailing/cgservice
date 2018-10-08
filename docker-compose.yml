@@ -39,7 +39,13 @@ services:
       - pptp
     ports:
       - "1723:1723"
-    privileged: true
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+    devices:
+      - /dev/ppp
+    sysctls:
+      - net.ipv4.ip_forward=1
 
   l2tp:
     build: l2tp
@@ -55,7 +61,13 @@ services:
     ports:
       - "500:500/udp"
       - "4500:4500/udp"
-    privileged: true
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+    devices:
+      - /dev/ppp
+    sysctls:
+      - net.ipv4.ip_forward=1
 
   openvpn:
     build: openvpn
@@ -66,7 +78,13 @@ services:
       - openvpn
     ports:
       - "1194:1194/udp"
-    privileged: true
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+    devices:
+      - /dev/net/tun
+    sysctls:
+      - net.ipv4.ip_forward=1
 
   openvpn_tcp:
     build:
@@ -79,7 +97,13 @@ services:
       - openvpn
     ports:
       - "1194:1194"
-    privileged: true
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+    devices:
+      - /dev/net/tun
+    sysctls:
+      - net.ipv4.ip_forward=1
 
   mysql:
     image: mysql
