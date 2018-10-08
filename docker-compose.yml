@@ -68,25 +68,38 @@ services:
       - "1194:1194/udp"
     privileged: true
 
+  openvpn_tcp:
+    build:
+      context: openvpn
+      dockerfile: Dockerfile.tcp
+    depends_on:
+      - netredirect
+    restart: unless-stopped
+    networks:
+      - openvpn
+    ports:
+      - "1194:1194"
+    privileged: true
+
   mysql:
     image: mysql
     command: --default-authentication-plugin=mysql_native_password
     restart: always
-    networks:
-      - backend
     env_file:
       - mysql/password.env
     volumes:
       - mysql:/var/lib/mysql
+    networks:
+      - backend
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
     restart: always
+    environment:
+      PMA_HOST: mysql
     networks:
       - frontend
       - backend
-    environment:
-      PMA_HOST: mysql
 
   cgserver:
     build: cgserver

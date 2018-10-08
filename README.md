@@ -146,11 +146,14 @@ Each certificate expires in about 3 months, so letsencrypt should be run in cycl
 - [x] Add cgserver service.
 - [x] Handle static files in cgserver.
 - [x] Redirect traffic to *net.tsinghua.edu.cn* to another page by DNAT.
-- [ ] Put ftp into a Docker volume, ~~so does mysql~~.
+- [ ] Put ftp into a Docker volume, ~~do so to mysql data~~.
 - [ ] In cgserver, add a callback URL to GitHub OAuth to allow multiple instances use the same OAuth App.
-- [ ] Add OpenVPN protocol TCP.
+- [x] Add OpenVPN protocol TCP.
 - [x] Make it easier to config apache2.
 - [ ] Make it easier to config openvpn.
 - [ ] VPN server secret is not required if we use intranet to communicate with cgserver.
 - [x] Add an automate script to generate configs (just copy sample configs).
 - [ ] Make netredirect more friendly.
+- [ ] Build all docker images from *debian:stretch* and we will have no need to build *cscg/base*.
+- [ ] Promote FTP to FTPS.
+- [ ] Backup script for web content.
