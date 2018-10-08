@@ -1,5 +1,5 @@
 import os
 
-SERVER_AUTH_URL = 'https://cgserver.tsing.net/serverlist/vpnauth'
-CLIENT_SECRET = ''
+SERVER_AUTH_URL = 'http://cgserver/serverlist/vpnauth'
+CLIENT_SECRET = 'secret'
 LOG_PATH = os.path.join(os.path.dirname(__file__), '..', 'log', 'auth.log')

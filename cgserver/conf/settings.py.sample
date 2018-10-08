@@ -25,7 +25,7 @@ SECRET_KEY = 'fw3n-^salq93=2q#y)uoy6kvcsyk)wi^!s#vg_)j)i47be7yi7'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['cgserver.tsing.net']
+ALLOWED_HOSTS = ['cgserver.tsing.net', 'cgserver']
 
 
 # Application definition
@@ -131,4 +131,4 @@ STATICFILES_DIRS = [
 GITHUB_CLIENT_ID = '0254755de5a27276d6f4'
 GITHUB_CLIENT_SECRET = ''
 GITHUB_PERSONAL_ACCESS_TOKEN = ''
-VPN_CLIENT_SECRET = ''
+VPN_CLIENT_SECRET = 'secret'

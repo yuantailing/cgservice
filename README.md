@@ -40,9 +40,9 @@ Run all services in a docker composer.
        cp cgserver/conf/settings.py.sample cgserver/conf/settings.py && \
        cp letsencrypt/sites.env.sample letsencrypt/sites.env
 
-	$ chmod 600 vsftpd/conf/vusers.txt pptp/conf/chap-secrets l2tp/vpn.env \
-	   openvpn/conf/settings.py openvpn/conf/server.key mysql/password.env \
-	   cgserver/conf/settings.py
+   $ chmod 600 vsftpd/conf/vusers.txt pptp/conf/chap-secrets l2tp/vpn.env \
+       openvpn/conf/settings.py openvpn/conf/server.key mysql/password.env \
+       cgserver/conf/settings.py
    ```
 
 1. Up docker composer
@@ -147,11 +147,10 @@ Each certificate expires in about 3 months, so letsencrypt should be run in cycl
 - [x] Handle static files in cgserver.
 - [x] Redirect traffic to *net.tsinghua.edu.cn* to another page by DNAT.
 - [ ] Put ftp into a Docker volume, ~~do so to mysql data~~.
-- [ ] In cgserver, add a callback URL to GitHub OAuth to allow multiple instances use the same OAuth App.
 - [x] Add OpenVPN protocol TCP.
 - [x] Make it easier to config apache2.
 - [ ] Make it easier to config openvpn.
-- [ ] VPN server secret is not required if we use intranet to communicate with cgserver.
+- [x] OpenVPN communicate with cgserver through intranet.
 - [x] Add an automate script to generate configs (just copy sample configs).
 - [ ] Make netredirect more friendly.
 - [ ] Build all docker images from *debian:stretch* and we will have no need to build *cscg/base*.

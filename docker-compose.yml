@@ -29,6 +29,7 @@ services:
       - pptp
       - l2tp
       - openvpn
+      - openvpn_tcp
 
   pptp:
     build: pptp
@@ -76,6 +77,7 @@ services:
     restart: unless-stopped
     networks:
       - openvpn
+      - cgserver
     ports:
       - "1194:1194/udp"
     cap_add:
@@ -94,7 +96,8 @@ services:
       - netredirect
     restart: unless-stopped
     networks:
-      - openvpn
+      - openvpn_tcp
+      - cgserver
     ports:
       - "1194:1194"
     cap_add:
@@ -133,6 +136,7 @@ services:
     networks:
       - frontend
       - backend
+      - cgserver
 
   letsencrypt:
     build: letsencrypt
@@ -156,6 +160,10 @@ networks:
   l2tp:
 
   openvpn:
+
+  openvpn_tcp:
+
+  cgserver:
 
   letsencrypt:
 

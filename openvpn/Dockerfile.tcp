@@ -13,7 +13,7 @@ COPY entrypoint.sh /entrypoint.sh
 WORKDIR /etc/openvpn/cscg/conf
 
 RUN mkdir ../log
-RUN sed -i 's/proto udp/proto tcp/g' server.conf
+RUN sed -i 's/^proto udp/proto tcp/g' server.conf
 
 EXPOSE 1194
 ENTRYPOINT ["/entrypoint.sh"]
