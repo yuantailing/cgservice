@@ -5,7 +5,7 @@ services:
     build: apache2
     restart: unless-stopped
     volumes:
-      - /srv/ftp:/srv/ftp:ro
+      - ftp:/srv/ftp:ro
       - letsencrypt:/etc/letsencrypt:ro
     networks:
       - frontend
@@ -17,7 +17,8 @@ services:
     build: vsftpd
     restart: unless-stopped
     volumes:
-      - /srv/ftp:/srv/ftp
+      - ftp:/srv/ftp
+      - letsencrypt:/etc/letsencrypt:ro
     network_mode: host
 
   netredirect:
@@ -145,7 +146,7 @@ services:
     env_file:
       - letsencrypt/sites.env
     volumes:
-      - /srv/ftp:/srv/ftp
+      - ftp:/srv/ftp
       - letsencrypt:/etc/letsencrypt
     networks:
       - letsencrypt
@@ -168,6 +169,8 @@ networks:
   letsencrypt:
 
 volumes:
+  ftp:
+
   letsencrypt:
 
   mysql:

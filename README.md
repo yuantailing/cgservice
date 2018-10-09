@@ -11,7 +11,7 @@ Run all services in a docker composer.
 1. mysql 是内网数据库服务
 1. phpmyadmin 是 web 端管理 mysql 数据库用的，用 apache2 转发
 1. cgserver 是另一项 web 服务，并提供 openvpn 的认证。cgserver 也用 apache2 转发
-1. letsencrypt 用于签署 SSL 证书，以便 apache2 能用 HTTPS
+1. letsencrypt 用于签署 SSL 证书，使得 apache2 用 HTTPS，vsftpd 用 FTPS
 1. 网络做了隔离，前端的 apache2 不能跟后端的 mysql 通信，各个 VPN 之间也不能通过内网通信
 1. docker-compose 用于构建和管理这些服务，一键启动和停止整批服务
 
@@ -30,6 +30,7 @@ Run all services in a docker composer.
 
    ```sh
    $ cp -r apache2/conf/sites-available.sample/ apache2/conf/sites-available/ && \
+       cp vsftpd/conf/vsftpd.conf.sample vsftpd/conf/vsftpd.conf && \
        cp vsftpd/conf/vusers.txt.sample vsftpd/conf/vusers.txt && \
        cp -r netredirect/conf/sites-available.sample netredirect/conf/sites-available && \
        cp pptp/conf/chap-secrets.sample pptp/conf/chap-secrets && \
@@ -62,16 +63,17 @@ Run all services in a docker composer.
 You should edit configs to solve following issues:
 
 1. Apache2 `ServerName` is not properly configured, so you will always visit the default website.
-1. Ensure ftp user root exists and have the proper owner, or vsftpd will fail.
+1. Ensure ftp user roots exist and have the proper owner, or vsftpd will fail.
 1. The default vsftpd passwords are weak and public available.
 1. The default pptp password and l2tp password are weak and public available.
 1. OpenVPN key file is broken and openvpn will fail. Please use the correct key file.
-1. OpenVPN `CLIENT_SECRET` is incorrect so it cannot communicate with cgserver.
+1. OpenVPN `CLIENT_SECRET` is weak.
 1. The default mysql root password is unsafe, please login to phpmyadmin and change it.
 1. Create a database and db user, and then config cgserver to the correct database.
 1. Futher configure cgserver.
 1. Letsencrypt domain name is not properly configured, so it's failed to issue SSL certificates.
 1. Edit apache2 *\*-le-ssl.conf* to use SSL, and edit HTTP configs to redirect to HTTPS.
+1. Force vsftpd to use SSL connections.
 1. Add a service to run letsencrypt in cycle to renew certificates.
 
 ## Services
@@ -84,10 +86,12 @@ You should edit configs to solve following issues:
 
 ### vsftpd
 
+1. Copy *vsftpd/conf/vsftpd.conf.sample* to *vsftpd/conf/vsftpd.conf.txt*.
 1. Copy *vsftpd/conf/vusers.txt.sample* to *vsftpd/conf/vusers.txt* and edit it.
 1. Edit config files in *vsftpd/conf/vsftpd_user_conf/*.
-1. Ensure user roots (*/srv/ftp/cscg* and */srv/ftp/oslab*) exists and have the proper owner (UID is 10021 and GID is 10021).
 1. Build and run.
+1. Ensure user roots (*/srv/ftp/cscg* and */srv/ftp/oslab*) exists and have the proper owner. For the first run, you can run `docker-compose exec vsftpd sh -c 'mkdir -p /srv/ftp/{cscg,oslab} && chown ftp:ftp /srv/ftp/{cscg,oslab}'`
+1. After certificates are issued, we can further edit configs in *vsftpd/conf/vsftpd.conf*, set `ssl_enable=YES`, `force_local_logins_ssl=YES` and so on.
 
 ### netredirect
 
@@ -146,7 +150,7 @@ Each certificate expires in about 3 months, so letsencrypt should be run in cycl
 - [x] Add cgserver service.
 - [x] Handle static files in cgserver.
 - [x] Redirect traffic to *net.tsinghua.edu.cn* to another page by DNAT.
-- [ ] Put ftp into a Docker volume, ~~do so to mysql data~~.
+- [x] Put ftp and mysql data into a Docker volume.
 - [x] Add OpenVPN protocol TCP.
 - [x] Make it easier to config apache2.
 - [ ] Make it easier to config openvpn.
@@ -154,5 +158,5 @@ Each certificate expires in about 3 months, so letsencrypt should be run in cycl
 - [x] Add an automate script to generate configs (just copy sample configs).
 - [ ] Make netredirect more friendly.
 - [ ] Build all docker images from *debian:stretch* and we will have no need to build *cscg/base*.
-- [ ] Promote FTP to FTPS.
+- [x] Promote FTP to FTPS.
 - [ ] Backup script for web content.

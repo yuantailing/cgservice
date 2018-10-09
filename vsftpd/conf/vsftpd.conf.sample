@@ -2,8 +2,8 @@ listen=NO
 listen_ipv6=YES
 anonymous_enable=NO
 local_enable=YES
-#write_enable=YES
-local_umask=022
+write_enable=YES
+#local_umask=022
 #anon_upload_enable=YES
 #anon_mkdir_write_enable=YES
 dirmessage_enable=YES
@@ -30,20 +30,42 @@ connect_from_port_20=YES
 #ls_recurse_enable=YES
 secure_chroot_dir=/var/run/vsftpd/empty
 pam_service_name=vsftpd.virtual
-rsa_cert_file=/etc/ssl/certs/ssl-cert-snakeoil.pem
-rsa_private_key_file=/etc/ssl/private/ssl-cert-snakeoil.key
-ssl_enable=NO
+rsa_cert_file=/etc/letsencrypt/live/cgservice/fullchain.pem
+rsa_private_key_file=/etc/letsencrypt/live/cgservice/privkey.pem
+#ssl_enable=YES
 
+# see http://vsftpd.beasts.org/vsftpd_conf.html
 allow_writeable_chroot=YES
-virtual_use_local_privs=YES
+anon_umask=022
 guest_enable=YES
 user_sub_token=$USER
-chroot_local_user=YES
 user_config_dir=/etc/vsftpd_user_conf
-local_root=/var/run/vsftpd/empty
+anon_root=/var/run/vsftpd/empty
 download_enable=NO
+hide_ids=YES
 
-# local_root=/srv/ftp/$USER
-# write_enable=YES
-# download_enable=YES
-# hide_ids=YES
+# Change then to `YES' to force all logins to use a secure SSL connection.
+force_anon_data_ssl=NO
+force_anon_logins_ssl=NO
+force_local_logins_ssl=NO
+
+
+# per user config
+
+# Which is the root directory?
+#local_root=/srv/ftp/cscg
+
+# Can upload file?
+#anon_upload_enable=YES
+
+# Can mkdir?
+#anon_mkdir_write_enable=YES
+
+# Can delete file, rename file and modify file?
+#anon_other_write_enable=YES
+
+# Can download file?
+#download_enable=YES
+
+# No hide uid?
+#hide_ids=NO
