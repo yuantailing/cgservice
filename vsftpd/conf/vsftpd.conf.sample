@@ -41,31 +41,36 @@ guest_enable=YES
 user_sub_token=$USER
 user_config_dir=/etc/vsftpd_user_conf
 anon_root=/var/run/vsftpd/empty
+local_root=/var/run/vsftpd/empty
 download_enable=NO
+dirlist_enable=NO
 hide_ids=YES
 
-# Change then to `YES' to force all logins to use a secure SSL connection.
-force_anon_data_ssl=NO
-force_anon_logins_ssl=NO
-force_local_logins_ssl=NO
+# Change then to `NO' if you allow insecure connections when `ssl_enable=YES'.
+force_anon_data_ssl=YES
+force_anon_logins_ssl=YES
+force_local_logins_ssl=YES
 
 
 # per user config
 
 # Which is the root directory?
-#local_root=/srv/ftp/cscg
+#local_root=/var/run/vsftpd/empty
 
 # Can upload file?
 #anon_upload_enable=YES
 
+# Can download file?
+#download_enable=YES
+
+# Can list dir?
+#dirlist_enable=YES
+
 # Can mkdir?
 #anon_mkdir_write_enable=YES
 
-# Can delete file, rename file and modify file?
+# Can delete file, rename file or modify file?
 #anon_other_write_enable=YES
-
-# Can download file?
-#download_enable=YES
 
 # No hide uid?
 #hide_ids=NO

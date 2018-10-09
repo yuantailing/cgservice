@@ -4,14 +4,17 @@ local_root=/srv/ftp/cscg
 # Can upload file?
 anon_upload_enable=YES
 
+# Can download file?
+download_enable=YES
+
+# Can list dir?
+dirlist_enable=YES
+
 # Can mkdir?
 anon_mkdir_write_enable=YES
 
-# Can delete file, rename file and modify file?
+# Can delete file, rename file or modify file?
 anon_other_write_enable=YES
-
-# Can download file?
-download_enable=YES
 
 # No hide uid?
 #hide_ids=NO
