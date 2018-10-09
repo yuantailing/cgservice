@@ -2,7 +2,7 @@
 
 set -ex
 
-service vsftpd start || true
-#vsftpd /etc/vsftpd.conf
+# see https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/5/html/5.6_technical_notes/vsftpd
+trap "SIGUSR1 received" SIGUSR1
 
-while [ 1 ]; do sleep 1h; done
+vsftpd /etc/vsftpd.conf

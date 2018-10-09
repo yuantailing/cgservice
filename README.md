@@ -9,7 +9,7 @@ Run all services in a docker composer.
 1. pptp、l2tp、openvpn 是几个 VPN 服务，开放各自的端口
 1. netredirect 用于 VPN 重定向，VPN 把目的地址为 net.tsinghua.edu.cn 的流量重定向到这里，避免用户通过 VPN 意外“断开连接”
 1. mysql 是内网数据库服务
-1. phpmyadmin 是 web 端管理 mysql 数据库用的，用 apache2 转发
+1. phpmyadmin 是可视化管理 mysql 数据库的 web 服务，用 apache2 转发
 1. cgserver 是另一项 web 服务，并提供 openvpn 的认证。cgserver 也用 apache2 转发
 1. letsencrypt 用于签署 SSL 证书，使得 apache2 用 HTTPS，vsftpd 用 FTPS
 1. 网络做了隔离，前端的 apache2 不能跟后端的 mysql 通信，各个 VPN 之间也不能通过内网通信
