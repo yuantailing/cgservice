@@ -20,12 +20,6 @@ Run all services in a docker composer.
 ### Quick start
 1. Please inall [docker](https://docs.docker.com/install/linux/docker-ce/debian/) and [docker-compose](https://docs.docker.com/compose/install/).
 
-1. Build the base image.
-
-   ```sh
-   $ base/build.sh
-   ```
-
 1. Copy sample configs and make secret config files not globally visible.
 
    ```sh
@@ -46,16 +40,28 @@ Run all services in a docker composer.
        cgserver/conf/settings.py
    ```
 
+1. Build images
+
+   ```sh
+   $ docker-compose build
+   ```
+
 1. Up docker composer
 
    ```sh
    $ docker-compose up --build
    ```
 
-  You can also up docker-compose in daemon mode
+   You can also up docker-compose in daemon mode
 
    ```sh
    $ docker-compose up --build -d
+   ```
+
+   You can up only one or more specified service
+
+   ```sh
+   $ docker-compose up --build pptp l2tp
    ```
 
 ### What's next
@@ -90,7 +96,7 @@ You should edit configs to solve following issues:
 1. Copy *vsftpd/conf/vusers.txt.sample* to *vsftpd/conf/vusers.txt* and edit it.
 1. Edit config files in *vsftpd/conf/vsftpd_user_conf/*.
 1. Build and run.
-1. Ensure user roots (*/srv/ftp/cscg* and */srv/ftp/oslab*) exists and have the proper owner. For the first run, you can run `docker-compose exec vsftpd sh -c 'mkdir -p /srv/ftp/{cscg,oslab} && chown ftp:ftp /srv/ftp/{cscg,oslab}'`
+1. Ensure user roots (*/srv/ftp/cscg* and */srv/ftp/oslab*) exists and have the proper owner. For the first run, you can run `docker-compose exec vsftpd sh -c 'mkdir -p /srv/ftp/{cscg,oslab,cgserver} && chown ftp:ftp /srv/ftp/{cscg,oslab}'`
 1. After certificates are issued, we can further edit configs in *vsftpd/conf/vsftpd.conf*, set `ssl_enable=YES`, `force_local_logins_ssl=YES` and so on.
 
 ### netredirect
@@ -152,11 +158,11 @@ Each certificate expires in about 3 months, so letsencrypt should be run in cycl
 - [x] Redirect traffic to *net.tsinghua.edu.cn* to another page by DNAT.
 - [x] Put ftp and mysql data into a Docker volume.
 - [x] Add OpenVPN protocol TCP.
-- [x] Make it easier to config apache2.
-- [ ] Make it easier to config openvpn.
+- [x] Make it easier to configure apache2.
+- [ ] Make it easier to configure openvpn.
 - [x] OpenVPN communicate with cgserver through intranet.
 - [x] Add an automate script to generate configs (just copy sample configs).
 - [ ] Make netredirect more friendly.
-- [ ] Build all docker images from *debian:stretch* and we will have no need to build *cscg/base*.
+- [x] Build all docker images from *debian:stretch* and we will have no need to build *cscg/base*.
 - [x] Promote FTP to FTPS.
 - [ ] Backup script for web content.

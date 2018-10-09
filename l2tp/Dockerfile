@@ -1,5 +1,9 @@
-FROM cscg/base
+FROM debian:stretch
+
 # modified from hwdsl2/docker-ipsec-vpn-server
+
+RUN sed -i s/deb.debian.org/mirrors.tuna.tsinghua.edu.cn/g /etc/apt/sources.list && \
+	sed -i s/security.debian.org/mirrors.tuna.tsinghua.edu.cn/g /etc/apt/sources.list
 
 ENV SWAN_VER 3.26
 
@@ -32,7 +36,7 @@ RUN apt-get -yqq update \
 	&& deb_url="debian/pool/main/x/xl2tpd/xl2tpd_1.3.12-1_${os_arch}.deb" \
 	&& wget -t 3 -T 30 -nv -O xl2tpd.deb "https://mirrors.kernel.org/${deb_url}" \
 	|| wget -t 3 -T 30 -nv -O xl2tpd.deb "https://debian.osuosl.org/${deb_url}" \
-	&& apt-get -yqq install ./xl2tpd.deb \
+	&& apt-get -yqq --no-install-recommends install ./xl2tpd.deb \
 	&& rm -f xl2tpd.deb \
 	&& apt-get -yqq remove \
 		libnss3-dev libnspr4-dev pkg-config libpam0g-dev \

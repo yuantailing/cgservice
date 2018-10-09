@@ -1,18 +1,20 @@
-FROM cscg/base
+FROM debian:stretch
+
+RUN sed -i s/deb.debian.org/mirrors.tuna.tsinghua.edu.cn/g /etc/apt/sources.list && \
+	sed -i s/security.debian.org/mirrors.tuna.tsinghua.edu.cn/g /etc/apt/sources.list
 
 RUN apt-get update && \
-	apt-get install --no-install-recommends -y apache2 default-libmysqlclient-dev && \
+	apt-get install --no-install-recommends -y gcc apache2 git python3 python3-dev python3-pip python3-setuptools default-libmysqlclient-dev && \
 	rm -rf /var/lib/apt/lists/*
 
-RUN pip3 install setuptools && \
-	pip3 install mysqlclient && \
-	rm -r ~/.cache/pip
+RUN pip3 install mysqlclient && \
+	rm -rf ~/.cache/pip
 
 RUN git clone https://github.com/yuantailing/cgserver.git /opt/cgserver && \
 	cd /opt/cgserver && \
 	git checkout 1eb8751859308891b21777601f4e8dcceab35fe0 && \
 	pip3 install -r cgserver/requirements.txt && \
-	rm -r ~/.cache/pip
+	rm -rf ~/.cache/pip
 
 COPY conf/settings.py /opt/cgserver/cgserver/cgserver/settings.py
 COPY conf/000-default.conf /etc/apache2/sites-available/000-default.conf

@@ -1,11 +1,14 @@
-FROM cscg/base
+FROM debian:stretch
+
+RUN sed -i s/deb.debian.org/mirrors.tuna.tsinghua.edu.cn/g /etc/apt/sources.list && \
+	sed -i s/security.debian.org/mirrors.tuna.tsinghua.edu.cn/g /etc/apt/sources.list
 
 RUN apt-get update && \
-	apt-get install --no-install-recommends -y openvpn iptables dnsutils && \
+	apt-get install --no-install-recommends -y openvpn iptables dnsutils python python-pip && \
 	rm -rf /var/lib/apt/lists/*
 
 RUN pip install requests && \
-	rm -r ~/.cache/pip
+	rm -rf ~/.cache/pip
 
 COPY conf /etc/openvpn/cscg/conf
 COPY entrypoint.sh /entrypoint.sh
