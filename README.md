@@ -162,7 +162,7 @@ Each certificate expires in about 3 months, so letsencrypt should be run in cycl
 - [ ] Make it easier to configure openvpn.
 - [x] OpenVPN communicate with cgserver through intranet.
 - [x] Add an automate script to generate configs (just copy sample configs).
-- [ ] Make netredirect more friendly.
+- [x] Make netredirect more friendly.
 - [x] Build all docker images from *debian:stretch* and we will have no need to build *cscg/base*.
 - [x] Promote FTP to FTPS.
 - [ ] Backup script for web content.

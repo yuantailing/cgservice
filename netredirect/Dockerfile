@@ -10,6 +10,9 @@ RUN apt-get update && \
 COPY conf/sites-available/*.conf /etc/apache2/sites-available/
 COPY conf/options-ssl-apache.conf /opt/letsencrypt/options-ssl-apache.conf
 
+RUN rm -rf /var/www/html/*
+COPY html/ /var/www/html/
+
 RUN a2enmod ssl && \
 	a2ensite 000-default 000-default-le-ssl
 

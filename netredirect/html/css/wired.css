@@ -1,0 +1,38 @@
+@charset "utf-8";
+@import "/css/common.css";
+
+a{color:#763880;}
+
+body{ background:#DADBDC url(../image/background.png) repeat-x top;}
+#head{ background:url(../image/wired/logo.gif) no-repeat;}
+#title{ background:url(../image/wired/title.png) no-repeat; margin:20px 0 4px 48px; }
+
+.greet{position:absolute; top:0; left:0; width:720px; height:304px; background:#93278F url(../image/wired/greeting.png) no-repeat 32px 28px; -webkit-box-shadow:0 0 8px rgba(0,0,0,0.1); -moz-box-shadow:0 0 4px rgba(0,0,0,0.1); box-shadow:0 0 8px rgba(0,0,0,0.1);}
+
+.triangle_greet{position:absolute; top:304px; left:32px; border-color:#93278F transparent; border-width: 48px 48px 0 0;}
+
+#account{float:right; font-size:13px; padding-left:40px; background:url(../image/wired/account.gif) no-repeat 0 0; }
+
+#notice_box .corner{border-color:transparent #763880; border-width: 16px 16px 0 0;}
+#notice_box #notice{position:relative; width:320px; height:160px; background:#992995 url(../image/wired/notice.png) no-repeat 14px 10px; -webkit-box-shadow:0 0 8px rgba(0,0,0,0.1); -moz-box-shadow:0 0 4px rgba(0,0,0,0.1); box-shadow:0 0 8px rgba(0,0,0,0.1);}
+
+#popup{min-width:640px; min-height:480px; background:#E6E6E6 url(../image/wired/popup_bg.png) no-repeat top right;}
+#popup .greet{top:64px; left:48px; width:512px; height:224px; background:#93278F url(../image/wired/popup_greeting.png) no-repeat 30px 46px; }
+
+#info .user_name{float:left; color:#93278F; font-family:Helvetica, Arial, sans-serif; font-size:34px; font-weight:lighter;}
+.usage_bar #usage_value{float:left; height:32px; max-width:280px; background:#BC9BCC;}
+
+#links #link_info{background:url(../image/wired/popup_info.gif) no-repeat 2px 2px;}
+#links #link_lib{background:url(../image/wired/popup_lib.gif) no-repeat 2px 2px;}
+#links #link_learn{background:url(../image/wired/popup_learn.gif) no-repeat 4px 1px;}
+#links #link_mail{background:url(../image/wired/popup_mail.gif) no-repeat 0 1px;}
+
+#phone #head{position:absolute; top:0; left:0; margin:0; background:#93278F; width:100%; height:108px; box-shadow:0 0 8px rgba(0,0,0,0.3); -webkit-box-shadow:0 0 8px rgba(0,0,0,0.3); -moz-box-shadow:0 0 4px rgba(0,0,0,0.3);}
+#phone #head img{display:block; margin:8px 0 0 16px; width:202px;}
+#phone .triangle_head{position:absolute; top:108px; left:4px; border-color:#93278F #E6E6E6; border-width: 32px 32px 0 0;}
+#phone #account{float:left; margin:8px 0 8px 20px; padding-left:24px; background:url(../image/wired/phone_account.gif) no-repeat 0 5px; font-size:14px;}
+
+/* 二维码 qrcode */
+.qrcode { float:right; margin-top:15px; margin-right:50px; }
+.qrcode img { width:129px; height:129px; border:none; }
+.qrcode p { line-height:18px; color:#5d5d5d; text-align:center; font-size:3px; }
