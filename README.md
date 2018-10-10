@@ -78,6 +78,7 @@ You should edit configs to solve following issues:
 1. The default mysql root password is unsafe, please login to phpmyadmin and change it.
 1. Create a database and db user, and then config cgserver to the correct database.
 1. Futher configure cgserver.
+1. The default svn admin password is unsafe, please login to svn and change it.
 1. Letsencrypt domain name is not properly configured, so it's failed to issue SSL certificates.
 1. Edit apache2 *\*-le-ssl.conf* to use SSL, and edit HTTP configs to redirect to HTTPS.
 1. Force vsftpd to use SSL connections.
