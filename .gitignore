@@ -6,7 +6,6 @@
 /l2tp/vpn.env
 /openvpn/conf/settings.py
 /openvpn/conf/server.key
-/mysql/password.env
 /cgserver/conf/settings.py
 /letsencrypt/sites.env
 

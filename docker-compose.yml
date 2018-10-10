@@ -139,6 +139,14 @@ services:
       - backend
       - cgserver
 
+  csvn:
+    build: csvn
+    restart: unless-stopped
+    volumes:
+      - csvn:/var/csvn
+    networks:
+      - frontend
+
   letsencrypt:
     build: letsencrypt
     depends_on:
@@ -174,3 +182,5 @@ volumes:
   letsencrypt:
 
   mysql:
+
+  csvn:

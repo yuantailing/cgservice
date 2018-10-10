@@ -5,8 +5,8 @@ refuse-chap
 refuse-mschap
 require-mschap-v2
 require-mppe-128
-ms-dns 8.8.8.8
-ms-dns 8.8.4.4
+ms-dns 166.111.8.28
+ms-dns 166.111.8.29
 #ms-wins 10.0.0.3
 #ms-wins 10.0.0.4
 proxyarp

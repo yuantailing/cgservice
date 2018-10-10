@@ -10,7 +10,8 @@ Run all services in a docker composer.
 1. netredirect 用于 VPN 重定向，VPN 把目的地址为 net.tsinghua.edu.cn 的流量重定向到这里，避免用户通过 VPN 意外“断开连接”
 1. mysql 是内网数据库服务
 1. phpmyadmin 是可视化管理 mysql 数据库的 web 服务，用 apache2 转发
-1. cgserver 是另一项 web 服务，并提供 openvpn 的认证。cgserver 也用 apache2 转发
+1. cgserver 是另一项 web 服务，并提供 openvpn 的认证，用 apache2 转发
+1. csvn 是 SVN 服务，用 apache2 转发
 1. letsencrypt 用于签署 SSL 证书，使得 apache2 用 HTTPS，vsftpd 用 FTPS
 1. 网络做了隔离，前端的 apache2 不能跟后端的 mysql 通信，各个 VPN 之间也不能通过内网通信
 1. docker-compose 用于构建和管理这些服务，一键启动和停止整批服务
@@ -31,7 +32,6 @@ Run all services in a docker composer.
        cp l2tp/vpn.env.sample l2tp/vpn.env && \
        cp openvpn/conf/settings.py.sample openvpn/conf/settings.py && \
        touch openvpn/conf/server.key && \
-       cp mysql/password.env.sample mysql/password.env && \
        cp cgserver/conf/settings.py.sample cgserver/conf/settings.py && \
        cp letsencrypt/sites.env.sample letsencrypt/sites.env
 
@@ -125,8 +125,8 @@ You should edit configs to solve following issues:
 
 ### mysql
 
-1. Copy *mysql/password.env.sample* to *mysql/password.env* and edit it. Note that only the password set on the first run affects.
 1. Run.
+1. Login to phpmyadmin and change root password.
 
 ### phpmyadmin
 
@@ -141,6 +141,11 @@ You should edit configs to solve following issues:
 1. Run `docker-compose exec cgserver python3 manage.py migrate` to initialize database.
 1. Run `docker-compose exec cgserver python3 manage.py createsuperuser` to a super user, who can login to Django administration.
 1. Login to Django administration (URI is /admin/) and add some server configs.
+
+### csvn
+
+1. Build and run.
+1. login to csvn and change admin password.
 
 ### letsencrypt
 
