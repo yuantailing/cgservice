@@ -3,7 +3,7 @@
 set -ex
 
 if [ ! -d "/var/csvn/data" ]; then
-	chown -R data
+	chown -R csvn:csvn data
     mv data /var/csvn/data
 fi
 

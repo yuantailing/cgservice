@@ -9,7 +9,7 @@ RUN apt-get update && \
 
 ENV JAVA_HOME /usr/lib/jvm/java-8-openjdk-amd64/jre
 
-RUN curl https://downloads-guests.open.collab.net/files/documents/61/18759/CollabNetSubversionEdge-5.2.2_linux-x86_64.tar.gz -o csvn.tar.gz && \
+RUN curl https://open-access.oss-cn-beijing.aliyuncs.com/Downloads/CollabNetSubversionEdge-5.2.2_linux-x86_64.tar.gz -o csvn.tar.gz && \
 	tar xzvf csvn.tar.gz -C /opt/ && \
 	rm csvn.tar.gz
 

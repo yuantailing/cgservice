@@ -31,13 +31,12 @@ Run all services in a docker composer.
        cp pptp/conf/chap-secrets.sample pptp/conf/chap-secrets && \
        cp l2tp/vpn.env.sample l2tp/vpn.env && \
        cp openvpn/conf/settings.py.sample openvpn/conf/settings.py && \
-       touch openvpn/conf/server.key && \
+       cp openvpn/conf/server.key.sample openvpn/conf/server.key && \
        cp cgserver/conf/settings.py.sample cgserver/conf/settings.py && \
        cp letsencrypt/sites.env.sample letsencrypt/sites.env
 
    $ chmod 600 vsftpd/conf/vusers.txt pptp/conf/chap-secrets l2tp/vpn.env \
-       openvpn/conf/settings.py openvpn/conf/server.key mysql/password.env \
-       cgserver/conf/settings.py
+       openvpn/conf/settings.py openvpn/conf/server.key cgserver/conf/settings.py
    ```
 
 1. Build images
@@ -45,6 +44,8 @@ Run all services in a docker composer.
    ```sh
    $ docker-compose build
    ```
+
+1. (l2tp) Load the IPsec af_key kernel module on the Docker host: `sudo modprobe af_key`.
 
 1. Up docker composer
 
@@ -96,7 +97,7 @@ You should edit configs to solve following issues:
 1. Copy *vsftpd/conf/vusers.txt.sample* to *vsftpd/conf/vusers.txt* and edit it.
 1. Edit config files in *vsftpd/conf/vsftpd_user_conf/*.
 1. Build and run.
-1. Ensure user roots (*/srv/ftp/cscg* and */srv/ftp/oslab*) exists and have the proper owner. For the first run, you can run `docker-compose exec vsftpd sh -c 'mkdir -p /srv/ftp/{cscg,oslab,cgserver} && chown ftp:ftp /srv/ftp/{cscg,oslab}'`
+1. Ensure user roots (*/srv/ftp/cscg* and */srv/ftp/oslab*) exists and have the proper owner. For the first run, you can run `docker-compose exec vsftpd bash -c 'mkdir -p /srv/ftp/{cscg,oslab,cgserver,svn} && chown ftp:ftp /srv/ftp/{cscg,oslab}'`
 1. After certificates are issued, we can further edit configs in *vsftpd/conf/vsftpd.conf*, set `ssl_enable=YES`, `force_local_logins_ssl=YES` and so on.
 
 ### netredirect
@@ -146,6 +147,7 @@ You should edit configs to solve following issues:
 
 1. Build and run.
 1. login to csvn and change admin password.
+1. In "Server Settings", set hostname and force apache encryption.
 
 ### letsencrypt
 
@@ -171,3 +173,4 @@ Each certificate expires in about 3 months, so letsencrypt should be run in cycl
 - [x] Build all docker images from *debian:stretch* and we will have no need to build *cscg/base*.
 - [x] Promote FTP to FTPS.
 - [ ] Backup script for web content.
+- [ ] Should not put .well-known of *cgserver* and *svn* into ftp.

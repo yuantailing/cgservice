@@ -24,7 +24,7 @@ WORKDIR /opt/cgserver/cgserver
 
 RUN a2enmod proxy proxy_http
 RUN python3 manage.py collectstatic
-RUN adduser user
+RUN useradd user
 
 EXPOSE 80
 CMD /runscript.sh
