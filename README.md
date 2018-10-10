@@ -98,7 +98,7 @@ You should edit configs to solve following issues:
 1. Copy *vsftpd/conf/vusers.txt.sample* to *vsftpd/conf/vusers.txt* and edit it.
 1. Edit config files in *vsftpd/conf/vsftpd_user_conf/*.
 1. Build and run.
-1. Ensure user roots (*/srv/ftp/cscg* and */srv/ftp/oslab*) exists and have the proper owner. For the first run, you can run `docker-compose exec vsftpd bash -c 'mkdir -p /srv/ftp/{cscg,oslab,cgserver,svn} && chown ftp:ftp /srv/ftp/{cscg,oslab}'`
+1. Ensure user roots (*/srv/ftp/cscg* and */srv/ftp/oslab*) exists and have the proper owner. For the first run, you can run `docker-compose exec vsftpd bash -c 'mkdir -p /srv/ftp/{cscg,oslab} && chown ftp:ftp /srv/ftp/{cscg,oslab}'`
 1. After certificates are issued, we can further edit configs in *vsftpd/conf/vsftpd.conf*, set `ssl_enable=YES`, `force_local_logins_ssl=YES` and so on.
 
 ### netredirect
