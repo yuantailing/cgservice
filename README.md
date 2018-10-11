@@ -33,7 +33,8 @@ Run all services in a docker composer.
        cp openvpn/conf/settings.py.sample openvpn/conf/settings.py && \
        cp openvpn/conf/server.key.sample openvpn/conf/server.key && \
        cp cgserver/conf/settings.py.sample cgserver/conf/settings.py && \
-       cp letsencrypt/sites.env.sample letsencrypt/sites.env
+       cp letsencrypt/sites.env.sample letsencrypt/sites.env && \
+       cp -r backup/ignore.sample backup/ignore
 
    $ chmod 600 vsftpd/conf/vusers.txt pptp/conf/chap-secrets l2tp/vpn.env \
        openvpn/conf/settings.py openvpn/conf/server.key cgserver/conf/settings.py
@@ -83,6 +84,7 @@ You should edit configs to solve following issues:
 1. Edit apache2 *\*-le-ssl.conf* to use SSL, and edit HTTP configs to redirect to HTTPS.
 1. Force vsftpd to use SSL connections.
 1. Add a service to run letsencrypt in cycle to renew certificates.
+1. Add a service to run backup in cycle.
 
 ## Services
 
@@ -158,6 +160,20 @@ You should edit configs to solve following issues:
 
 Each certificate expires in about 3 months, so letsencrypt should be run in cycles to renew certificates. Apache2 should be running when renewing certificates.
 
+### backup
+
+Run `docker bulid backup` and `docker run --rm backup <action>`. `action` can be:
+
+ - `nothing`: 不执行任何任务（用于 `docker-compose up`）
+ - `rsync-only`: 执行基于时间戳的 rsync 但不 commit，不创建历史版本，运行速度比较快
+ - `commit-timestamp`: 执行基于时间戳 rsync 并 commit，创建历史版本，运行速度一般
+ - `commit-checksum`: 执行基于文件校验码的 rsync 并 commit，创建历史版本，运行速度很慢
+ - `gc`: 只执行 `git gc`
+
+一般定时运行 commit-timestamp，隔很长时间运行 commit-checksum 和 gc。docker-compose 启动时自动运行 rsync-only。
+
+稳定的备份文件在 backup_storage 卷中。代码确保 backup_storage/repo/ 的备份是原子性的，只要存在该目录就一定有完整的备份。如果某次备份报错或中断，则可能导致该目录不存在，此时 backup_cache/ 与 backup_storage/repo.tmp/ 至少有一个是完整的备份，并且代码会拒绝执行备份操作直至修复。
+
 ## Todo
 
 - [x] Support HTTPS for apache2. Mount cert files into apache2 container, and add a service to renew certifications.
@@ -173,5 +189,6 @@ Each certificate expires in about 3 months, so letsencrypt should be run in cycl
 - [x] Make netredirect more friendly.
 - [x] Build all docker images from *debian:stretch* and we will have no need to build *cscg/base*.
 - [x] Promote FTP to FTPS.
-- [ ] Backup script for web content.
-- [ ] Should not put .well-known of *cgserver* and *svn* into ftp.
+- [x] Backup script.
+- [x] Should not put .well-known of *cgserver* and *svn* into ftp.
+- [ ] Mysql incremental backup.

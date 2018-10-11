@@ -1,5 +1,5 @@
 # Which is the root directory?
-local_root=/srv/ftp/cscg
+local_root=/srv/ftp/oslab
 
 # Can upload file?
 anon_upload_enable=YES

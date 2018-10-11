@@ -36,6 +36,7 @@ rsa_private_key_file=/etc/letsencrypt/live/cgservice/privkey.pem
 
 # see http://vsftpd.beasts.org/vsftpd_conf.html
 allow_writeable_chroot=YES
+delete_failed_uploads=YES
 anon_umask=022
 guest_enable=YES
 user_sub_token=$USER

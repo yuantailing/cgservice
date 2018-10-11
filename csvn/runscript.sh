@@ -10,4 +10,6 @@ fi
 rm -rf data
 ln -s /var/csvn/data data
 
+su csvn -c "bin/csvn-httpd start"
+
 su csvn -c "bin/csvn console"

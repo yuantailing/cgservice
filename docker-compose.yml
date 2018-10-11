@@ -160,6 +160,17 @@ services:
     networks:
       - letsencrypt
 
+  backup:
+    build: backup
+    volumes:
+      - ftp:/mnt/ftp:ro
+      - csvn:/mnt/csvn:ro
+      - backup_cache:/mnt/backup_cache
+      - backup_storage:/mnt/backup_storage
+      - ./backup/backup.py:/backup.py:ro
+      - ./backup/ignore:/etc/cgservice/backup/ignore:ro
+    command: ["rsync-only"]
+
 networks:
   frontend:
 
@@ -185,3 +196,7 @@ volumes:
   mysql:
 
   csvn:
+
+  backup_cache:
+
+  backup_storage:
