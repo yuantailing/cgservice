@@ -13,6 +13,7 @@ Run all services in a docker composer.
 1. cgserver 是另一项 web 服务，并提供 openvpn 的认证，用 apache2 转发
 1. csvn 是 SVN 服务，用 apache2 转发
 1. letsencrypt 用于签署 SSL 证书，使得 apache2 用 HTTPS，vsftpd 用 FTPS
+1. backup 用于备份 ftp、svn 等数据卷的历史版本
 1. 网络做了隔离，前端的 apache2 不能跟后端的 mysql 通信，各个 VPN 之间也不能通过内网通信
 1. docker-compose 用于构建和管理这些服务，一键启动和停止整批服务
 
@@ -26,17 +27,15 @@ Run all services in a docker composer.
    ```sh
    $ cp .env.sample .env && \
        cp -r apache2/conf/sites-available.sample/ apache2/conf/sites-available/ && \
-       cp vsftpd/conf/vsftpd.conf.sample vsftpd/conf/vsftpd.conf && \
        cp vsftpd/conf/vusers.txt.sample vsftpd/conf/vusers.txt && \
        cp -r netredirect/conf/sites-available.sample netredirect/conf/sites-available && \
        cp openvpn/conf/settings.py.sample openvpn/conf/settings.py && \
        cp openvpn/conf/server.key.sample openvpn/conf/server.key && \
        cp cgserver/conf/settings.py.sample cgserver/conf/settings.py && \
-       cp letsencrypt/sites.env.sample letsencrypt/sites.env && \
        cp -r backup/ignore.sample backup/ignore
 
-   $ chmod 600 vsftpd/conf/vusers.txt pptp/conf/chap-secrets l2tp/vpn.env \
-       openvpn/conf/settings.py openvpn/conf/server.key cgserver/conf/settings.py
+   $ chmod 600 .env vsftpd/conf/vusers.txt openvpn/conf/settings.py \
+       openvpn/conf/server.key cgserver/conf/settings.py
    ```
 
 1. Build images
@@ -44,8 +43,6 @@ Run all services in a docker composer.
    ```sh
    $ docker-compose build
    ```
-
-1. (l2tp) Load the IPsec af_key kernel module on the Docker host: `sudo modprobe af_key`.
 
 1. Up docker composer
 
@@ -71,17 +68,19 @@ You should edit configs to solve following issues:
 
 1. Apache2 `ServerName` is not properly configured, so you will always visit the default website.
 1. Ensure ftp user roots exist and have the proper owner, or vsftpd will fail.
-1. The default vsftpd passwords are weak and public available.
-1. The default pptp password and l2tp password are weak and public available.
+1. The default vsftpd passwords are unsafe.
+1. The default pptp password and l2tp password are unsafe.
+1. L2tp needs to oad the IPsec af_key kernel module on the Docker host: `sudo modprobe af_key`.
 1. OpenVPN key file is broken and openvpn will fail. Please use the correct key file.
-1. OpenVPN `CLIENT_SECRET` is weak.
+1. OpenVPN `CLIENT_SECRET` is unsafe.
 1. The default mysql root password is unsafe, please login to phpmyadmin and change it.
 1. Create a database and db user, and then config cgserver to the correct database.
-1. Futher configure cgserver.
+1. Configure GitHub OAuth for cgserver.
 1. The default svn admin password is unsafe, please login to svn and change it.
 1. Letsencrypt domain name is not properly configured, so it's failed to issue SSL certificates.
-1. Edit apache2 *\*-le-ssl.conf* to use SSL, and edit HTTP configs to redirect to HTTPS.
-1. Force vsftpd to use SSL connections.
+1. Edit apache2 (and netredirect) *\*-le-ssl.conf* to use SSL, and edit HTTP configs to redirect to HTTPS.
+1. Edit *.env* to force vsftpd to use SSL connections.
+1. If your server is out of Tsinghua University, please change `ms-dns` to another DNS server in *pptp/conf/pptpd-options*.
 1. Add a service to run letsencrypt in cycle to renew certificates.
 1. Add a service to run backup in cycle.
 
@@ -89,41 +88,38 @@ You should edit configs to solve following issues:
 
 ### apache2
 
-1. Copy *apache2/conf/sites-available.sample/* to *apache2/conf/sites-available/* and edit then (fill `ServerName`).
+1. Fill `ServerName` in *apache2/conf/sites-available/*.
 1. Build and run.
-1. After certificates are issued, we can further edit configs in *apache2/conf/sites-available/*, enable SSL, and rewrite HTTP to HTTPS.
+1. After certificates are issued, we can further edit configs in *apache2/conf/sites-available/* to enable SSL and rewrite HTTP to HTTPS.
 
 ### vsftpd
 
-1. Copy *vsftpd/conf/vsftpd.conf.sample* to *vsftpd/conf/vsftpd.conf.txt*.
-1. Copy *vsftpd/conf/vusers.txt.sample* to *vsftpd/conf/vusers.txt* and edit it.
-1. Edit config files in *vsftpd/conf/vsftpd_user_conf/*.
+1. Change passwords in *vsftpd/conf/vusers.txt*.
+1. (optional) Edit config files in *vsftpd/conf/vsftpd_user_conf/*.
 1. Build and run.
 1. Ensure user roots (*/srv/ftp/cscg* and */srv/ftp/oslab*) exists and have the proper owner. For the first run, you can run `docker-compose exec vsftpd bash -c 'mkdir -p /srv/ftp/{cscg,oslab} && chown ftp:ftp /srv/ftp/{cscg,oslab}'`
-1. After certificates are issued, we can further edit configs in *vsftpd/conf/vsftpd.conf*, set `ssl_enable=YES`, `force_local_logins_ssl=YES` and so on.
+1. After certificates are issued, we can edit config in *.env*, set `VSFTPD_SSL_ENABLE=1`.
 
 ### netredirect
 
-1. Copy *netredirect/conf/sites-available.sample/* to *netredirect/conf/sites-available/*.
 1. Build and run.
-1. After certificates are issued, we can further edit configs in *netredirect/conf/sites-available/*, enable SSL, and rewrite HTTP to HTTPS.
+1. After certificates are issued, we can edit configs in *netredirect/conf/sites-available/* to enable SSL.
 
 ### pptp
 
-1. Edit `PPTP_*` in *.env*.
+1. Change password in *.env*.
 1. Build and run.
 
 ### l2tp
 
 1. Load the IPsec af_key kernel module on the Docker host: `sudo modprobe af_key`.
-1. Edit `L2TP_*` in *.env*.
+1. Change password in *.env*.
 1. Build and run.
 
 ### openvpn
 
-1. Generate *openvpn/conf/dh2048.pem* by running `openssl dhparam -out openvpn/conf/dh2048.pem 2048`.
 1. Create *openvpn/conf/server.key* (see *openvpn/conf/server.key.sample* for the format).
-1. Copy *openvpn/conf/settings.py.sample* to *openvpn/conf/settings.py* and edit it (fill `CLIENT_SECRET`).
+1. Fill `CLIENT_SECRET` in *openvpn/conf/settings.py*.
 1. Build and run.
 
 ### mysql
@@ -139,7 +135,7 @@ You should edit configs to solve following issues:
 ### cgserver
 
 1. Create a database and a user in database.
-1. Copy *cgserver/conf/settings.py.sample* to *cgserver/conf/settings.py* and edit it (fill `SECRET_KEY`, `DEBUG`, `ALLOWED_HOSTS`, `DATABASES`, `GITHUB_CLIENT_SECRET`, `GITHUB_PERSONAL_ACCESS_TOKEN` and `VPN_CLIENT_SECRET`).
+1. Fill `SECRET_KEY`, `DEBUG`, `ALLOWED_HOSTS`, `DATABASES`, `GITHUB_CLIENT_SECRET`, `GITHUB_PERSONAL_ACCESS_TOKEN` and `VPN_CLIENT_SECRET` in *cgserver/conf/settings.py*.
 1. Build and run.
 1. Run `docker-compose exec cgserver python3 manage.py migrate` to initialize database.
 1. Run `docker-compose exec cgserver python3 manage.py createsuperuser` to a super user, who can login to Django administration.
@@ -149,11 +145,11 @@ You should edit configs to solve following issues:
 
 1. Build and run.
 1. login to csvn and change admin password.
-1. In "Server Settings", set hostname and force apache encryption.
+1. (optional) Login to "Server Settings" and set hostname.
 
 ### letsencrypt
 
-1. Copy *letsencrypt/sites.env.sample* to *letsencrypt/sites.env* and edit it.
+1. Edit `LETSENCRYPT_*` in *.env*.
 1. Build and run.
 1. Update apache2 config files and reload apache2 by running `docker-compose exec apache2 apachectl -k graceful` and `docker-compose exec netredirect apachectl -k graceful`.
 
@@ -171,7 +167,7 @@ Run `docker bulid backup` and `docker run --rm backup <action>`. `action` can be
 
 一般定时运行 commit-timestamp，隔很长时间运行 commit-checksum 和 gc。docker-compose 启动时自动运行 rsync-only。
 
-稳定的备份文件在 backup_storage 卷中。代码确保 backup_storage/repo/ 的备份是原子性的，只要存在该目录就一定有完整的备份。如果某次备份报错或中断，则可能导致该目录不存在，此时 backup_cache/ 与 backup_storage/repo.tmp/ 至少有一个是完整的备份，并且代码会拒绝执行备份操作直至修复。
+稳定的备份文件在 backup_storage 卷中。代码确保只要 backup_storage/repo/ 存在，该备份就一定是完整的。如果某次备份报错或中断，则可能导致该目录不存在，此时 backup_cache/ 与 backup_storage/repo.tmp/ 至少有一个是完整的备份，并且代码会拒绝执行备份直至修复。
 
 ## Todo
 
@@ -191,4 +187,3 @@ Run `docker bulid backup` and `docker run --rm backup <action>`. `action` can be
 - [x] Backup script.
 - [x] Should not put .well-known of *cgserver* and *svn* into ftp.
 - [ ] Mysql incremental backup.
-- [ ] Move some configs to *.env*.

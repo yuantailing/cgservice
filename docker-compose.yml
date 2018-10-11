@@ -16,6 +16,8 @@ services:
   vsftpd:
     build: vsftpd
     restart: unless-stopped
+    environment:
+      - SSL_ENABLE=${VSFTPD_SSL_ENABLE}
     volumes:
       - ftp:/srv/ftp
       - letsencrypt:/etc/letsencrypt:ro
@@ -157,8 +159,9 @@ services:
     build: letsencrypt
     depends_on:
       - apache2
-    env_file:
-      - letsencrypt/sites.env
+    environment:
+      - ROOTS=${LETSENCRYPT_ROOTS}
+      - DOMAINS=${LETSENCRYPT_DOMAINS}
     volumes:
       - ftp:/srv/ftp
       - letsencrypt:/etc/letsencrypt
