@@ -37,6 +37,9 @@ services:
     depends_on:
       - netredirect
     restart: unless-stopped
+    environment:
+      - CLIENT=${PPTP_CLIENT}
+      - SECRET=${PPTP_SECRET}
     networks:
       - pptp
     ports:
@@ -54,8 +57,10 @@ services:
     depends_on:
       - netredirect
     restart: unless-stopped
-    env_file:
-      - l2tp/vpn.env
+    environment:
+      - VPN_IPSEC_PSK=${L2TP_VPN_IPSEC_PSK}
+      - VPN_USER=${L2TP_VPN_USER}
+      - VPN_PASSWORD=${L2TP_VPN_PASSWORD}
     volumes:
       - /lib/modules:/lib/modules:ro
     networks:

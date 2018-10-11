@@ -24,12 +24,11 @@ Run all services in a docker composer.
 1. Copy sample configs and make secret config files not globally visible.
 
    ```sh
-   $ cp -r apache2/conf/sites-available.sample/ apache2/conf/sites-available/ && \
+   $ cp .env.sample .env && \
+       cp -r apache2/conf/sites-available.sample/ apache2/conf/sites-available/ && \
        cp vsftpd/conf/vsftpd.conf.sample vsftpd/conf/vsftpd.conf && \
        cp vsftpd/conf/vusers.txt.sample vsftpd/conf/vusers.txt && \
        cp -r netredirect/conf/sites-available.sample netredirect/conf/sites-available && \
-       cp pptp/conf/chap-secrets.sample pptp/conf/chap-secrets && \
-       cp l2tp/vpn.env.sample l2tp/vpn.env && \
        cp openvpn/conf/settings.py.sample openvpn/conf/settings.py && \
        cp openvpn/conf/server.key.sample openvpn/conf/server.key && \
        cp cgserver/conf/settings.py.sample cgserver/conf/settings.py && \
@@ -111,13 +110,13 @@ You should edit configs to solve following issues:
 
 ### pptp
 
-1. Copy *pptp/conf/chap-secrets.sample* to *pptp/conf/chap-secrets* and edit it.
+1. Edit `PPTP_*` in *.env*.
 1. Build and run.
 
 ### l2tp
 
 1. Load the IPsec af_key kernel module on the Docker host: `sudo modprobe af_key`.
-1. Copy *l2tp/vpn.env.sample* to *l2tp/vpn.env* and edit it.
+1. Edit `L2TP_*` in *.env*.
 1. Build and run.
 
 ### openvpn
@@ -192,3 +191,4 @@ Run `docker bulid backup` and `docker run --rm backup <action>`. `action` can be
 - [x] Backup script.
 - [x] Should not put .well-known of *cgserver* and *svn* into ftp.
 - [ ] Mysql incremental backup.
+- [ ] Move some configs to *.env*.

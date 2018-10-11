@@ -1,3 +1,4 @@
+/.env
 /apache2/conf/sites-available/
 /vsftpd/conf/vsftpd.conf
 /vsftpd/conf/vusers.txt
