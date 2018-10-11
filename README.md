@@ -187,3 +187,5 @@ Run `docker bulid backup` and `docker run --rm backup <action>`. `action` can be
 - [x] Backup script.
 - [x] Should not put .well-known of *cgserver* and *svn* into ftp.
 - [ ] Mysql incremental backup.
+- [ ] Dynamic manage vsftpd user on web.
+- [ ] A service like [Download9](https://git.net9.org/sast/Download9).

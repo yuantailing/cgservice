@@ -229,7 +229,11 @@ iptables -t nat -I POSTROUTING -s "$L2TP_NET" -o eth+ -j MASQUERADE
 
 # redirect net.tsinghua.edu.cn
 netredirect=$(nslookup netredirect | awk -F': ' 'NR==6 {print $2}')
-iptables -t nat -A PREROUTING -d 166.111.204.120 -j DNAT --to ${netredirect}
+iptables -t nat -A PREROUTING -d 166.111.4.0/24 -j DNAT --to ${netredirect}
+iptables -t nat -A PREROUTING -d 166.111.120.0/24 -j DNAT --to ${netredirect}
+iptables -t nat -A PREROUTING -d 166.111.204.0/24 -j DNAT --to ${netredirect}
+iptables -t nat -A PREROUTING -d 59.66.0.0/16 -j DNAT --to ${netredirect}
+iptables -t nat -A PREROUTING -d 101.6.0.0/16 -j DNAT --to ${netredirect}
 
 # Update file attributes
 chmod 600 /etc/ipsec.secrets /etc/ppp/chap-secrets /etc/ipsec.d/passwd
