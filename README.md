@@ -167,7 +167,9 @@ Run `docker bulid backup` and `docker run --rm backup <action>`. `action` can be
 
 一般定时运行 commit-timestamp，隔很长时间运行 commit-checksum 和 gc。docker-compose 启动时自动运行 rsync-only。
 
-稳定的备份文件在 backup_storage 卷中。代码确保只要 backup_storage/repo/ 存在，该备份就一定是完整的。如果某次备份报错或中断，则可能导致该目录不存在，此时 backup_cache/ 与 backup_storage/repo.tmp/ 至少有一个是完整的备份，并且代码会拒绝执行备份直至修复。
+使用 backup_storage 卷与 backup_cache 卷双备份，至少有一个卷是完好的。如果 *backup_storage/backup.lock* 存在，则说明某次备份被中断，此时自动备份会拒绝执行，应手动检查卷是否完好，修复后再删除 *backup.lock*。
+
+请修改 *backup/ignore/* 忽略没必要保存历史版本的大文件、文件众多的目录。
 
 ## Todo
 

@@ -1,4 +1,3 @@
-import fcntl
 import logging
 import os
 import shutil
@@ -8,8 +7,6 @@ import sys
 
 BACKUP_CACHE_ROOT = '/mnt/backup_cache'
 BACKUP_STORAGE_ROOT = '/mnt/backup_storage'
-STORAGE_TEMP_DIR = 'repo.tmp'
-STORAGE_PERMANENT_DIR = 'repo'
 
 
 CONFIG = [
@@ -33,12 +30,6 @@ def call(*args, **kwargs):
     if ret != 0:
         logging.info('[BACKUP] error in calling', args, kwargs)
         exit(ret)
-
-
-def check():
-    temp = os.path.join(BACKUP_STORAGE_ROOT, STORAGE_TEMP_DIR)
-    perm = os.path.join(BACKUP_STORAGE_ROOT, STORAGE_PERMANENT_DIR)
-    assert not os.path.exists(temp)
 
 
 def rsync(*, checksum):
@@ -79,25 +70,17 @@ def commit():
 
 
 def store(*, checksum, includegit):
-    temp = os.path.join(BACKUP_STORAGE_ROOT, STORAGE_TEMP_DIR)
-    perm = os.path.join(BACKUP_STORAGE_ROOT, STORAGE_PERMANENT_DIR)
-    if not os.path.isdir(perm):
-        os.makedirs(perm)
-    os.rename(perm, temp)
-    temp = os.path.join(BACKUP_STORAGE_ROOT, STORAGE_TEMP_DIR)
-    perm = os.path.join(BACKUP_STORAGE_ROOT, STORAGE_PERMANENT_DIR)
     for repo in [o['repo'] for o in CONFIG]:
         logging.info('[BACKUP] {:s} : store : start'.format(repo))
         src = os.path.join(BACKUP_CACHE_ROOT, repo)
         if includegit:
-            call(['rsync', '-avc' if checksum else '-av', '--delete', src, temp + '/'])
+            call(['rsync', '-avc' if checksum else '-av', '--delete', src, BACKUP_STORAGE_ROOT + '/'])
         else:
-            dst = os.path.join(temp, repo)
+            dst = os.path.join(BACKUP_STORAGE_ROOT, repo)
             if not os.path.isdir(dst):
                 os.makedirs(dst)
             call(['rsync', '-avc' if checksum else '-av', '--delete', os.path.join(src, 'data'), dst + '/'])
         logging.info('[BACKUP] {:s} : store : success'.format(repo))
-    os.rename(temp, perm)
 
 
 def gc():
@@ -114,32 +97,30 @@ def main(action):
 
     logging.basicConfig(format='%(asctime)s %(message)s', level=logging.DEBUG)
 
-    with open(os.path.join(BACKUP_STORAGE_ROOT, 'backup.lock'), 'w') as lockf:
-        fcntl.flock(lockf, fcntl.LOCK_EX)
+    if action == 'shell':
+        exit(call(['bash']))
+
+    lock_filename = os.path.join(BACKUP_STORAGE_ROOT, 'backup.lock')
+    with open(lock_filename, 'x') as lockf:
         if action == 'nothing':
             pass
-        elif action == 'shell':
-            call(['bash'])
         elif action == 'rsync-only':
-            check()
             rsync(checksum=False)
             store(checksum=False, includegit=False)
         elif action == 'commit-timestamp':
-            check()
             rsync(checksum=False)
             commit()
-            store(checksum=False, includegit=True)  # cache is OK is error occurs
+            store(checksum=False, includegit=True)
         elif action == 'commit-checksum':
-            check()
-            rsync(checksum=True)   # perm is OK is error occurs
-            commit()               # temp is OK is error occurs
-            store(checksum=True, includegit=True)   # cache is OK is error occurs
+            rsync(checksum=True)
+            commit()
+            store(checksum=True, includegit=True)
         elif action == 'gc':
-            check()
-            gc()                   # temp is OK is error occurs
-            store(checksum=False)  # cache is OK is error occurs
+            gc()
+            store(checksum=False)
         else:
             raise ValueError('invalid action {:s}'.format(action))
+    os.unlink(lock_filename)
 
 
 if __name__ == '__main__':
