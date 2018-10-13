@@ -8,10 +8,10 @@
     <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE9" />
     <title>CSCG VPN</title>
 
-    <link rel="stylesheet" type="text/css" href="/css/wired.css" />
+    <link rel="stylesheet" type="text/css" href="css/wired.css" />
 
-    <link rel="shortcut icon" href="/image/icon16-yellow.ico" type="image/x-icon" />
-    <link rel="icon" href="/image/icon32.png" sizes="32x32" type="image/png" />
+    <link rel="shortcut icon" href="image/icon16-yellow.ico" type="image/x-icon" />
+    <link rel="icon" href="image/icon32.png" sizes="32x32" type="image/png" />
   </head>
 
   <body id="popup">
@@ -45,12 +45,13 @@
     </div>
     <div style="position: relative; width: 560px; margin: auto;">
       <h3 style="margin: 10px;">限制</h3>
-      <p style="margin: 10px;">PPTP、L2TP 默认把所有流量导向 VPN。校内资源请直接访问，不要占用服务器带宽，已禁止 PPTP、L2TP 访问以下IP段：</p>
+      <p style="margin: 10px;">PPTP、L2TP 默认会把所有流量导向 VPN。访问校内资源请直接访问，不要占用服务器带宽，已禁止透过 PPTP、L2TP 访问以下IP段：</p>
       <ul style="margin: 10px;">
         <li>166.111.4.*</li>
         <li>166.111.120.*</li>
         <li>166.111.204.*</li>
         <li>59.66.*.*</li>
+        <li>101.5.*.*</li>
         <li>101.6.*.*</li>
       </ul>
       <p style="margin: 10px;">建议使用 OpenVPN 自动分流。</p>

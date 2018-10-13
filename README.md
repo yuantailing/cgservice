@@ -167,9 +167,20 @@ Run `docker bulid backup` and `docker run --rm backup <action>`. `action` can be
 
 一般定时运行 commit-timestamp，隔很长时间运行 commit-checksum 和 gc。docker-compose 启动时自动运行 rsync-only。
 
-使用 backup_storage 卷与 backup_cache 卷双备份，至少有一个卷是完好的。如果 *backup_storage/backup.lock* 存在，则说明某次备份被中断，此时自动备份会拒绝执行，应手动检查卷是否完好，修复后再删除 *backup.lock*。
+使用 backup_storage 卷与 backup_cache 卷双备份，即使备份中断也至少有一个卷是完好的。如果 *backup_storage/backup.lock* 存在，则说明某次备份被中断，此时自动备份会拒绝执行，应手动检查哪一个卷完好，修复后再删除 *backup.lock*。
 
 请修改 *backup/ignore/* 忽略没必要保存历史版本的大文件、文件众多的目录。
+
+## Troubleshooting
+
+If kernel version of host machine is greater than *linux-image-4.7.0-1-amd64*, you may have to run following script to allow GRE traffic forwarding to PPTP and L2TP.
+
+   ```sh
+   modprobe ip_conntrack_pptp
+   sysctl -w net.netfilter.nf_conntrack_helper=1
+  ```
+
+Refer to post [#1](https://lists.debian.org/debian-kernel/2016/10/msg00029.html) and [#2](https://forums.docker.com/t/solved-incoming-network-traffic-not-forwarding-to-container/43191).
 
 ## Todo
 
