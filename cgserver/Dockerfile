@@ -7,12 +7,12 @@ RUN apt-get update && \
 	apt-get install --no-install-recommends -y gcc apache2 git python3 python3-dev python3-pip python3-setuptools default-libmysqlclient-dev && \
 	rm -rf /var/lib/apt/lists/*
 
-RUN pip3 install mysqlclient && \
+RUN pip3 install django django-extensions mysqlclient && \
 	rm -rf ~/.cache/pip
 
 RUN git clone https://github.com/yuantailing/cgserver.git /opt/cgserver && \
 	cd /opt/cgserver && \
-	git checkout 1eb8751859308891b21777601f4e8dcceab35fe0 && \
+	git checkout cc452f8dc246725d0eb80657d2f85890303b75c7 && \
 	pip3 install -r cgserver/requirements.txt && \
 	rm -rf ~/.cache/pip
 

@@ -100,7 +100,7 @@ input[type=checkbox]{float:left; margin:4px 4px 0 0;}
 .disconnect:active{background-color:#B1AAC4; background-position:center -94px;}
 .disconnect:disable{background-color:#CFCFCF; background-position:center -141px;}
 
-#popup #links{position:absolute; bottom:32px; right:32px; width:234px;}
+#popup #links{position:absolute; bottom:48px; right:32px; width:240px;}
 #links li{float:left; margin-right:12px; font-size:11px; font-family:Verdana, Geneva, sans-serif;}
 #links li:last-child{float:right; margin:0;}
 #links li a{display:block; padding:16px 0 0 26px; height:16px;}

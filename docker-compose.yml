@@ -142,6 +142,12 @@ services:
     depends_on:
       - mysql
     restart: unless-stopped
+    environment:
+      - PPTP_CLIENT=${PPTP_CLIENT}
+      - PPTP_SECRET=${PPTP_SECRET}
+      - L2TP_VPN_IPSEC_PSK=${L2TP_VPN_IPSEC_PSK}
+      - L2TP_VPN_USER=${L2TP_VPN_USER}
+      - L2TP_VPN_PASSWORD=${L2TP_VPN_PASSWORD}
     networks:
       - frontend
       - backend
@@ -177,7 +183,6 @@ services:
       - backup_storage:/mnt/backup_storage
       - ./backup/backup.py:/backup.py:ro
       - ./backup/ignore:/etc/cgservice/backup/ignore:ro
-    command: ["rsync-only"]
 
 networks:
   frontend:
