@@ -8,7 +8,7 @@ RUN apt-get update && \
 	rm -rf /var/lib/apt/lists/*
 
 RUN git config --global user.name root && \
-	git config --global user.email root@cg.cs.tsinghua.edu.cn
+	git config --global user.email root@cgservice
 
 ENTRYPOINT ["python3", "-u", "/backup.py"]
 CMD ["nothing"]
