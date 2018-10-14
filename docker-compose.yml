@@ -182,6 +182,7 @@ services:
       - backup_cache:/mnt/backup_cache
       - backup_storage:/mnt/backup_storage
       - ./backup/backup.py:/backup.py:ro
+      - ./backup/exclude:/etc/cgservice/backup/exclude:ro
       - ./backup/ignore:/etc/cgservice/backup/ignore:ro
 
 networks:

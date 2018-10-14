@@ -35,10 +35,16 @@ def call(*args, **kwargs):
 def rsync(*, checksum):
     for src, repo in [[o[k] for k in ('src', 'repo')] for o in CONFIG]:
         logging.info('[BACKUP] {:s} : rsync : start'.format(repo))
+        with open(os.path.join('/etc/cgservice/backup/exclude', repo)) as f:
+            exclude = f.readlines()
+        exclude_args = []
+        for path in exclude:
+            assert '\n' == path[-1]
+            exclude_args += ['--exclude', path[:-1]]
         dst = os.path.join(BACKUP_CACHE_ROOT, repo)
         if not os.path.isdir(dst):
             os.makedirs(dst)
-        call(['rsync', '-avc' if checksum else '-av', '--delete', src + '/', dst + '/data'])
+        call(['rsync', '-avc' if checksum else '-av', '--delete', src + '/', dst + '/data'] + exclude_args)
         logging.info('[BACKUP] {:s} : rsync : success'.format(repo))
 
 
@@ -56,7 +62,7 @@ def commit():
             ret = subprocess.call(['git', 'init'])
             if ret != 0:
                 return ret
-        shutil.copy(os.path.join('/etc/cgservice/backup/ignore', repo), '.gitignore')
+        shutil.copy(os.path.join('/etc/cgservice/backup/ignore', repo), os.path.join('data', '.gitignore'))
         call('git ls-files --ignored --exclude-standard -z | xargs -0 -r git rm --cached', shell=True)
         call(['git', 'add', '--all'])
         output = subprocess.check_output(['git', 'status', '--porcelain'])
@@ -91,14 +97,15 @@ def gc():
         logging.info('[BACKUP] {:s} : gc : success'.format(repo))
 
 
-def main(action):
+def main():
     assert os.path.ismount(BACKUP_CACHE_ROOT)
     assert os.path.ismount(BACKUP_STORAGE_ROOT)
 
     logging.basicConfig(format='%(asctime)s %(message)s', level=logging.DEBUG)
 
+    action = sys.argv[1]
     if action == 'shell':
-        exit(call(['bash']))
+        exit(call(['bash'] + sys.argv[2:]))
 
     lock_filename = os.path.join(BACKUP_STORAGE_ROOT, 'backup.lock')
     with open(lock_filename, 'x') as lockf:
@@ -124,4 +131,4 @@ def main(action):
 
 
 if __name__ == '__main__':
-    main(sys.argv[1])
+    main()

@@ -32,6 +32,7 @@ Run all services in a docker composer.
        cp openvpn/conf/settings.py.sample openvpn/conf/settings.py && \
        cp openvpn/conf/server.key.sample openvpn/conf/server.key && \
        cp cgserver/conf/settings.py.sample cgserver/conf/settings.py && \
+       cp -r backup/exclude.sample backup/exclude && \
        cp -r backup/ignore.sample backup/ignore
 
    $ chmod 600 .env vsftpd/conf/vusers.txt openvpn/conf/settings.py \
@@ -169,7 +170,7 @@ Run `docker bulid backup` and `docker run --rm backup <action>`. `action` can be
 
 使用 backup_storage 卷与 backup_cache 卷双备份，即使备份中断也至少有一个卷是完好的。如果 *backup_storage/backup.lock* 存在，则说明某次备份被中断，此时自动备份会拒绝执行，应手动检查哪一个卷完好，修复后再删除 *backup.lock*。
 
-请修改 *backup/ignore/* 忽略没必要保存历史版本的大文件、文件众多的目录。
+请修改 *backup/exclude/* 和 *backup/ignore/* 忽略没必要保存历史版本的大文件、文件众多的目录。
 
 ## Troubleshooting
 
