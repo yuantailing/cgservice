@@ -22,6 +22,10 @@ CONFIG = [
         'src': '/mnt/csvn/data',
         'repo': 'csvn',
     },
+    {
+        'src': '/mnt/mysql',
+        'repo': 'mysql',
+    },
 ]
 
 
@@ -35,12 +39,14 @@ def call(*args, **kwargs):
 def rsync(*, checksum):
     for src, repo in [[o[k] for k in ('src', 'repo')] for o in CONFIG]:
         logging.info('[BACKUP] {:s} : rsync : start'.format(repo))
-        with open(os.path.join('/etc/cgservice/backup/exclude', repo)) as f:
-            exclude = f.readlines()
         exclude_args = []
-        for path in exclude:
-            assert '\n' == path[-1]
-            exclude_args += ['--exclude', path[:-1]]
+        exclude_filepath = os.path.join('/etc/cgservice/backup/exclude', repo)
+        if os.path.isfile(exclude_filepath):
+            with open(os.path.join('/etc/cgservice/backup/exclude', repo)) as f:
+                exclude = f.readlines()
+            for path in exclude:
+                assert '\n' == path[-1]
+                exclude_args += ['--exclude', path[:-1]]
         dst = os.path.join(BACKUP_CACHE_ROOT, repo)
         if not os.path.isdir(dst):
             os.makedirs(dst)

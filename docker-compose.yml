@@ -192,6 +192,7 @@ services:
     volumes:
       - ftp:/mnt/ftp:ro
       - csvn:/mnt/csvn:ro
+      - mysql:/mnt/mysql:ro
       - backup_cache:/mnt/backup_cache
       - backup_storage:/mnt/backup_storage
       - ./backup/backup.py:/backup.py:ro
