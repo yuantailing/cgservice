@@ -161,6 +161,19 @@ services:
     networks:
       - frontend
 
+  download:
+    build: download
+    environment:
+      - GITHUB_CLIENT_ID=${DOWNLOAD_GITHUB_CLIENT_ID}
+      - GITHUB_CLIENT_SECRET=${DOWNLOAD_GITHUB_CLIENT_SECRET}
+    volumes:
+      - download:/mnt/download
+    networks:
+      - frontend
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+
   letsencrypt:
     build: letsencrypt
     depends_on:
@@ -214,3 +227,5 @@ volumes:
   backup_cache:
 
   backup_storage:
+
+  download:

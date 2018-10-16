@@ -12,6 +12,7 @@ Run all services in a docker composer.
 1. phpmyadmin 是可视化管理 mysql 数据库的 web 服务，用 apache2 转发
 1. cgserver 是另一项 web 服务，并提供 openvpn 的认证，用 apache2 转发
 1. csvn 是 SVN 服务，用 apache2 转发
+1. download 是 fork 自 [Download9](https://download.net9.org) 的离线下载服务，用 apache2 转发
 1. letsencrypt 用于签署 SSL 证书，使得 apache2 用 HTTPS，vsftpd 用 FTPS
 1. backup 用于备份 ftp、svn 等数据卷的历史版本
 1. 网络做了隔离，前端的 apache2 不能跟后端的 mysql 通信，各个 VPN 之间也不能通过内网通信
@@ -78,6 +79,7 @@ You should edit configs to solve following issues:
 1. Create a database and db user, and then config cgserver to the correct database.
 1. Configure GitHub OAuth for cgserver.
 1. The default svn admin password is unsafe, please login to svn and change it.
+1. Configure GitHub OAuth and initialize database for download.
 1. Letsencrypt domain name is not properly configured, so it's failed to issue SSL certificates.
 1. Edit apache2 (and netredirect) *\*-le-ssl.conf* to use SSL, and edit HTTP configs to redirect to HTTPS.
 1. Edit *.env* to force vsftpd to use SSL connections.
@@ -148,6 +150,12 @@ You should edit configs to solve following issues:
 1. login to csvn and change admin password.
 1. (optional) Login to "Server Settings" and set hostname.
 
+### download
+
+1. Fill `DOWNLOAD_GITHUB_CLIENT_ID` and `DOWNLOAD_GITHUB_CLIENT_SECRET` in *.env*.
+1. Build and run.
+1. Run `docker-compose exec cgserver python3 manage.py migrate` to initialize database.
+
 ### letsencrypt
 
 1. Edit `LETSENCRYPT_*` in *.env*.
@@ -174,7 +182,7 @@ Run `docker bulid backup` and `docker run --rm backup <action>`. `action` can be
 
 ## Troubleshooting
 
-If kernel version of host machine is greater than *linux-image-4.7.0-1-amd64*, you may have to run following script to allow GRE traffic forwarding to PPTP and L2TP.
+If kernel version of host machine is greater than *linux-image-4.7.0-1-amd64*, you may have to run following script to allow GRE traffic forwarding for PPTP and L2TP.
 
    ```sh
    modprobe ip_conntrack_pptp
@@ -202,4 +210,5 @@ Refer to post [#1](https://lists.debian.org/debian-kernel/2016/10/msg00029.html)
 - [x] Should not put .well-known of *cgserver* and *svn* into ftp.
 - [ ] Mysql incremental backup.
 - [ ] Dynamic manage vsftpd user on web.
-- [ ] A service like [Download9](https://git.net9.org/sast/Download9).
+- [x] A service like [Download9](https://git.net9.org/sast/Download9).
+- [ ] Fix PPTP for Ubuntu and fix L2TP for Mac.
