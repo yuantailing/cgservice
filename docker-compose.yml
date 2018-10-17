@@ -163,6 +163,7 @@ services:
 
   download:
     build: download
+    restart: unless-stopped
     environment:
       - GITHUB_CLIENT_ID=${DOWNLOAD_GITHUB_CLIENT_ID}
       - GITHUB_CLIENT_SECRET=${DOWNLOAD_GITHUB_CLIENT_SECRET}
@@ -186,6 +187,50 @@ services:
       - letsencrypt:/etc/letsencrypt
     networks:
       - letsencrypt
+
+  # sharelatex:
+  #   restart: unless-stopped
+  #   image: sharelatex/sharelatex
+  #   depends_on:
+  #     - mongo
+  #     - redis
+  #   networks:
+  #     - frontend
+  #     - sharelatex
+  #   expose:
+  #     - 80
+  #   volumes:
+  #     - sharelatex:/var/lib/sharelatex
+  #   environment:
+  #     SHARELATEX_MONGO_URL: mongodb://mongo/sharelatex
+  #     SHARELATEX_REDIS_HOST: redis
+  #     SHARELATEX_APP_NAME: CG ShareLaTeX
+  #     SHARELATEX_SITE_URL: ${SHARELATEX_SITE_URL}
+  #     SHARELATEX_ADMIN_EMAIL: ${SHARELATEX_ADMIN_EMAIL}
+  #     SHARELATEX_EMAIL_FROM_ADDRESS: ${SHARELATEX_EMAIL_FROM_ADDRESS}
+  #     SHARELATEX_EMAIL_SMTP_HOST: ${SHARELATEX_EMAIL_SMTP_HOST}
+  #     SHARELATEX_EMAIL_SMTP_USER: ${SHARELATEX_EMAIL_SMTP_USER}
+  #     SHARELATEX_EMAIL_SMTP_PASS: ${SHARELATEX_EMAIL_SMTP_PASS}
+
+  mongo:
+    restart: always
+    image: mongo
+    networks:
+      - sharelatex
+    expose:
+      - 27017
+    volumes:
+      - mongo:/data/db
+
+  redis:
+    restart: always
+    image: redis
+    networks:
+      - sharelatex
+    expose:
+      - 6379
+    volumes:
+      - redis:/data
 
   backup:
     build: backup
@@ -214,6 +259,8 @@ networks:
 
   cgserver:
 
+  sharelatex:
+
   letsencrypt:
 
 volumes:
@@ -230,3 +277,9 @@ volumes:
   backup_storage:
 
   download:
+
+  sharelatex:
+
+  mongo:
+
+  redis:
