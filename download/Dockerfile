@@ -10,9 +10,9 @@ RUN apt-get update && \
 RUN pip3 install django\<2 requests pymysql && \
 	rm -rf ~/.cache/pip
 
-RUN git clone https://github.com/yuantailing/download9.git /srv/download9 && \
+RUN git clone --single-branch -b cg https://github.com/yuantailing/download9.git /srv/download9 && \
 	cd /srv/download9 && \
-	git checkout decb05f68d54e63b79366dcebe556c8a39ce7aee
+	git checkout d08d2693f832622c84e5ddd6fcaedc0a4622b3d3
 
 COPY runscript.sh /runscript.sh
 COPY conf/aria2.conf /srv/aria/aria2.conf

@@ -143,6 +143,7 @@ services:
       - mysql
     restart: unless-stopped
     environment:
+      - FTP_TMP_PASSWORD=${FTP_TMP_PASSWORD}
       - PPTP_CLIENT=${PPTP_CLIENT}
       - PPTP_SECRET=${PPTP_SECRET}
       - L2TP_VPN_IPSEC_PSK=${L2TP_VPN_IPSEC_PSK}
