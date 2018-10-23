@@ -4,6 +4,7 @@
 /netredirect/conf/sites-available/
 /openvpn/conf/settings.py
 /openvpn/conf/server.key
+/php/secret/
 /cgserver/conf/settings.py
 /backup/exclude/
 /backup/ignore/

@@ -10,6 +10,7 @@ Run all services in a docker composer.
 1. netredirect 用于 VPN 重定向，VPN 把目的地址为 net.tsinghua.edu.cn 的流量重定向到这里，避免用户通过 VPN 意外“断开连接”
 1. mysql 是内网数据库服务
 1. phpmyadmin 是可视化管理 mysql 数据库的 web 服务，用 apache2 转发
+1. php 是主页上唯一动态的部分，主页上的其它部分都是静态的
 1. cgserver 是另一项 web 服务，并提供 openvpn 的认证，用 apache2 转发
 1. csvn 是 SVN 服务，用 apache2 转发
 1. download 是 fork 自 [Download9](https://download.net9.org) 的离线下载服务，用 apache2 转发
@@ -32,12 +33,15 @@ Run all services in a docker composer.
        cp -r netredirect/conf/sites-available.sample netredirect/conf/sites-available && \
        cp openvpn/conf/settings.py.sample openvpn/conf/settings.py && \
        cp openvpn/conf/server.key.sample openvpn/conf/server.key && \
+       cp -r php/secret.sample php/secret && \
        cp cgserver/conf/settings.py.sample cgserver/conf/settings.py && \
        cp -r backup/exclude.sample backup/exclude && \
        cp -r backup/ignore.sample backup/ignore
 
    $ chmod 600 .env vsftpd/conf/vusers.txt openvpn/conf/settings.py \
        openvpn/conf/server.key cgserver/conf/settings.py
+
+   $ chmod 700 php/secret
    ```
 
 1. Build images
@@ -134,6 +138,11 @@ You should edit configs to solve following issues:
 
 1. Run.
 1. You can login to phpmyadmin in the default website (usually you can visit it by IP, and URI is /phpmyadmin/).
+
+### php
+
+1. Build and run.
+1. You may keep something secret in *php/secret* (for example, config files, get database connection).
 
 ### cgserver
 

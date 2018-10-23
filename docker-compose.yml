@@ -3,7 +3,7 @@ version: '3'
 services:
   apache2:
     build: apache2
-    restart: unless-stopped
+    restart: always
     volumes:
       - ftp:/srv/ftp:ro
       - letsencrypt:/etc/letsencrypt:ro
@@ -15,7 +15,7 @@ services:
 
   vsftpd:
     build: vsftpd
-    restart: unless-stopped
+    restart: always
     environment:
       - SSL_ENABLE=${VSFTPD_SSL_ENABLE}
     volumes:
@@ -25,7 +25,7 @@ services:
 
   netredirect:
     build: netredirect
-    restart: unless-stopped
+    restart: always
     volumes:
       - letsencrypt:/etc/letsencrypt:ro
     networks:
@@ -38,7 +38,7 @@ services:
     build: pptp
     depends_on:
       - netredirect
-    restart: unless-stopped
+    restart: always
     environment:
       - CLIENT=${PPTP_CLIENT}
       - SECRET=${PPTP_SECRET}
@@ -58,7 +58,7 @@ services:
     build: l2tp
     depends_on:
       - netredirect
-    restart: unless-stopped
+    restart: always
     environment:
       - VPN_IPSEC_PSK=${L2TP_VPN_IPSEC_PSK}
       - VPN_USER=${L2TP_VPN_USER}
@@ -82,7 +82,7 @@ services:
     build: openvpn
     depends_on:
       - netredirect
-    restart: unless-stopped
+    restart: always
     networks:
       - openvpn
       - cgserver
@@ -102,7 +102,7 @@ services:
       dockerfile: Dockerfile.tcp
     depends_on:
       - netredirect
-    restart: unless-stopped
+    restart: always
     networks:
       - openvpn_tcp
       - cgserver
@@ -137,11 +137,20 @@ services:
       - frontend
       - backend
 
+  php:
+    build: php
+    restart: always
+    volumes:
+      - ftp:/srv/ftp:ro
+    networks:
+      - frontend
+      - backend
+
   cgserver:
     build: cgserver
     depends_on:
       - mysql
-    restart: unless-stopped
+    restart: always
     environment:
       - FTP_TMP_PASSWORD=${FTP_TMP_PASSWORD}
       - PPTP_CLIENT=${PPTP_CLIENT}
@@ -156,7 +165,7 @@ services:
 
   csvn:
     build: csvn
-    restart: unless-stopped
+    restart: always
     volumes:
       - csvn:/var/csvn
     networks:
@@ -164,7 +173,7 @@ services:
 
   download:
     build: download
-    restart: unless-stopped
+    restart: always
     environment:
       - GITHUB_CLIENT_ID=${DOWNLOAD_GITHUB_CLIENT_ID}
       - GITHUB_CLIENT_SECRET=${DOWNLOAD_GITHUB_CLIENT_SECRET}
