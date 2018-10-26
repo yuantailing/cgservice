@@ -25,13 +25,14 @@ SECRET_KEY = 'fw3n-^salq93=2q#y)uoy6kvcsyk)wi^!s#vg_)j)i47be7yi7'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['cgserver.tsing.net', 'cgserver']
+ALLOWED_HOSTS = ['server.thucg.com', 'cgserver']
 
 
 # Application definition
 
 INSTALLED_APPS = [
     'serverlist.apps.ServerlistConfig',
+    'django_extensions',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -140,6 +141,7 @@ L2TP_USERNAME = os.environ.get('L2TP_VPN_USER')
 L2TP_PASSWORD = os.environ.get('L2TP_VPN_PASSWORD')
 FTP_TMP_PASSWORD = os.environ.get('FTP_TMP_PASSWORD')
 
-ALIYUN_ACCESS_KEY_ID = ''
-ALIYUN_ACCESS_KEY_SECRET = ''
-ALIDNS_DOMAIN = ''
+AWS_ACCESS_KEY_ID = ''
+AWS_ACCESS_KEY_SECRET = ''
+ROUTE53_HOSTED_ZONE_ID = ''
+ROUTE53_DOMAIN_NAME = 'thucg.com'

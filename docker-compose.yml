@@ -152,12 +152,12 @@ services:
       - mysql
     restart: always
     environment:
-      - FTP_TMP_PASSWORD=${FTP_TMP_PASSWORD}
       - PPTP_CLIENT=${PPTP_CLIENT}
       - PPTP_SECRET=${PPTP_SECRET}
       - L2TP_VPN_IPSEC_PSK=${L2TP_VPN_IPSEC_PSK}
       - L2TP_VPN_USER=${L2TP_VPN_USER}
       - L2TP_VPN_PASSWORD=${L2TP_VPN_PASSWORD}
+      - FTP_TMP_PASSWORD=${FTP_TMP_PASSWORD}
     networks:
       - frontend
       - backend
