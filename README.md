@@ -157,7 +157,7 @@ You should edit configs to solve following issues:
 
 1. Build and run.
 1. login to csvn and change admin password.
-1. (optional) Login to "Server Settings" and set hostname.
+1. Login to "Server Settings" and set *hostname*, enable *Apache use SSL* and set *port* to 443.
 
 ### download
 

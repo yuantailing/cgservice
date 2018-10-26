@@ -12,7 +12,7 @@ RUN pip3 install django django-extensions mysqlclient && \
 
 RUN git clone https://github.com/yuantailing/cgserver.git /opt/cgserver && \
 	cd /opt/cgserver && \
-	git checkout 9b613403627d4bea4168b5841e9b430b437a9efa && \
+	git checkout a6791dee61ee143c4d7c1972893b7ef8f6177234 && \
 	pip3 install -r cgserver/requirements.txt && \
 	rm -rf ~/.cache/pip
 
