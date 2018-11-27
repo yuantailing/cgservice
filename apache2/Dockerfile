@@ -4,15 +4,16 @@ RUN sed -i s/deb.debian.org/mirrors.tuna.tsinghua.edu.cn/g /etc/apt/sources.list
 	sed -i s/security.debian.org/mirrors.tuna.tsinghua.edu.cn/g /etc/apt/sources.list
 
 RUN apt-get update && \
-	apt-get install --no-install-recommends -y apache2 && \
+	apt-get install --no-install-recommends -y apache2 cron libapache2-mod-security2 logrotate modsecurity-crs && \
 	rm -rf /var/lib/apt/lists/*
 
 COPY conf/sites-available/*.conf /etc/apache2/sites-available/
 COPY conf/options-ssl-apache.conf /opt/letsencrypt/options-ssl-apache.conf
+COPY conf/logrotate_apache2.conf /etc/logrotate.d/apache2
 
-RUN a2enmod http2 proxy proxy_http proxy_wstunnel rewrite ssl
+RUN a2enmod http2 proxy proxy_http proxy_wstunnel rewrite security2 ssl
 RUN cd /etc/apache2/sites-available/ && a2ensite $(find -type f -and -not -name "*default*")
 
 EXPOSE 80
 EXPOSE 443
-CMD ["apachectl", "-D", "FOREGROUND"]
+CMD sh -c "service cron start && apachectl -D FOREGROUND"

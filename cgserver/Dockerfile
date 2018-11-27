@@ -12,7 +12,7 @@ RUN pip3 install boto3 django django-extensions mysqlclient requests && \
 
 RUN git clone https://github.com/yuantailing/cgserver.git /opt/cgserver && \
 	cd /opt/cgserver && \
-	git checkout a7e544c1b3c7113f5fbcbda0a5f995335b8f2e66 && \
+	git checkout d61adcf4e6e7c7b105a3a42a763958f25a761875 && \
 	pip3 install -r cgserver/requirements.txt && \
 	rm -rf ~/.cache/pip
 
@@ -21,9 +21,10 @@ COPY conf/000-default.conf /etc/apache2/sites-available/000-default.conf
 
 WORKDIR /opt/cgserver/cgserver
 
-RUN chown www-data:www-data cgserver/settings.py
-RUN a2enmod wsgi
-RUN python3 manage.py collectstatic
+RUN chown www-data:www-data cgserver/settings.py && \
+	python3 manage.py collectstatic && \
+	a2enmod wsgi && \
+	echo "application/x-openvpn-profile			ovpn" >>/etc/mime.types
 
 EXPOSE 80
 CMD ["apachectl", "-D", "FOREGROUND"]

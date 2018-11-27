@@ -125,9 +125,6 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'serverlist', 'static'),
-]
 
 GITHUB_CLIENT_ID = '0254755de5a27276d6f4'
 GITHUB_CLIENT_SECRET = ''
@@ -140,7 +137,6 @@ PPTP_PASSWORD = os.environ.get('PPTP_SECRET')
 L2TP_PRESHAREDKEY = os.environ.get('L2TP_VPN_IPSEC_PSK')
 L2TP_USERNAME = os.environ.get('L2TP_VPN_USER')
 L2TP_PASSWORD = os.environ.get('L2TP_VPN_PASSWORD')
-FTP_TMP_PASSWORD = os.environ.get('FTP_TMP_PASSWORD')
 
 AWS_ACCESS_KEY_ID = ''
 AWS_ACCESS_KEY_SECRET = ''

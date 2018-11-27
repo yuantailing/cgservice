@@ -5,8 +5,10 @@ services:
     build: apache2
     restart: always
     volumes:
+      - apache2_log:/var/log/apache2
       - ftp:/srv/ftp:ro
       - letsencrypt:/etc/letsencrypt:ro
+      - letsencrypt_webroot:/var/www/letsencrypt_webroot:ro
     networks:
       - frontend
     ports:
@@ -157,7 +159,6 @@ services:
       - L2TP_VPN_IPSEC_PSK=${L2TP_VPN_IPSEC_PSK}
       - L2TP_VPN_USER=${L2TP_VPN_USER}
       - L2TP_VPN_PASSWORD=${L2TP_VPN_PASSWORD}
-      - FTP_TMP_PASSWORD=${FTP_TMP_PASSWORD}
     networks:
       - frontend
       - backend
@@ -195,6 +196,7 @@ services:
     volumes:
       - ftp:/srv/ftp
       - letsencrypt:/etc/letsencrypt
+      - letsencrypt_webroot:/var/www/letsencrypt_webroot
     networks:
       - letsencrypt
 
@@ -228,9 +230,13 @@ networks:
   letsencrypt:
 
 volumes:
+  apache2_log:
+
   ftp:
 
   letsencrypt:
+
+  letsencrypt_webroot:
 
   mysql:
 
