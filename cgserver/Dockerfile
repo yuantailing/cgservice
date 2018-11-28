@@ -22,6 +22,7 @@ COPY conf/000-default.conf /etc/apache2/sites-available/000-default.conf
 WORKDIR /opt/cgserver/cgserver
 
 RUN chown www-data:www-data cgserver/settings.py && \
+	sed "s/admin\//serverlist\/admin\//" -i cgserver/urls.py && \
 	python3 manage.py collectstatic && \
 	a2enmod wsgi && \
 	echo "application/x-openvpn-profile			ovpn" >>/etc/mime.types

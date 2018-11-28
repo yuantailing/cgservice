@@ -8,7 +8,6 @@ services:
       - apache2_log:/var/log/apache2
       - ftp:/srv/ftp:ro
       - letsencrypt:/etc/letsencrypt:ro
-      - letsencrypt_webroot:/var/www/letsencrypt_webroot:ro
     networks:
       - frontend
     ports:
@@ -196,7 +195,6 @@ services:
     volumes:
       - ftp:/srv/ftp
       - letsencrypt:/etc/letsencrypt
-      - letsencrypt_webroot:/var/www/letsencrypt_webroot
     networks:
       - letsencrypt
 
@@ -235,8 +233,6 @@ volumes:
   ftp:
 
   letsencrypt:
-
-  letsencrypt_webroot:
 
   mysql:
 
