@@ -12,7 +12,7 @@ RUN pip3 install django\<2 requests pymysql && \
 
 RUN git clone --single-branch -b cg https://github.com/yuantailing/download9.git /srv/download9 && \
 	cd /srv/download9 && \
-	git checkout 854eef174b44064c9fd33a6e41556428961ec380
+	git checkout b2b23a5e499e8cb7a349d1fd6e087ac25e4d889f
 
 COPY runscript.sh /runscript.sh
 COPY conf/aria2.conf /srv/aria/aria2.conf
