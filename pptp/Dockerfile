@@ -9,8 +9,7 @@ RUN apt-get update && \
 
 COPY conf/pptpd.conf /etc/pptpd.conf
 COPY conf/pptpd-options /etc/ppp/pptpd-options
-COPY entrypoint.sh /entrypoint.sh
+COPY runscript.sh /runscript.sh
 
 EXPOSE 1723
-ENTRYPOINT ["/entrypoint.sh"]
-CMD ["pptpd", "--fg"]
+CMD ["/runscript.sh"]

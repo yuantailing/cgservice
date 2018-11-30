@@ -11,12 +11,11 @@ RUN pip install requests && \
 	rm -rf ~/.cache/pip
 
 COPY conf /etc/openvpn/cscg/conf
-COPY entrypoint.sh /entrypoint.sh
+COPY runscript.sh /runscript.sh
 
 WORKDIR /etc/openvpn/cscg/conf
 
 RUN mkdir ../log
 
 EXPOSE 1194/udp
-ENTRYPOINT ["/entrypoint.sh"]
-CMD ["openvpn", "server.conf"]
+CMD ["/runscript.sh"]
