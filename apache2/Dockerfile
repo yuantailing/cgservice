@@ -13,6 +13,8 @@ COPY conf/logrotate_apache2.conf /etc/logrotate.d/apache2
 
 RUN a2enmod http2 proxy proxy_http proxy_wstunnel rewrite security2 ssl
 RUN cd /etc/apache2/sites-available/ && a2ensite $(find -type f -and -not -name "*default*")
+RUN sed "s/ServerSignature On/ServerSignature Off/" -i /etc/apache2/conf-available/security.conf && \
+	sed "s/Alias \/icons\//#&/" -i /etc/apache2/mods-available/alias.conf
 
 EXPOSE 80
 EXPOSE 443
