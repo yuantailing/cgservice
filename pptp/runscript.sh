@@ -14,4 +14,4 @@ netredirect=$(nslookup netredirect | awk -F': ' 'NR==6 {print $2}')
 iptables -t nat -A PREROUTING -d 166.111.204.120 -j DNAT --to ${netredirect}
 iptables -t nat -A PREROUTING -d 101.6.4.100 -j DNAT --to ${netredirect}
 
-pptpd -fg
+pptpd --fg
