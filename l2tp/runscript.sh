@@ -231,6 +231,7 @@ iptables -t nat -I POSTROUTING -s "$L2TP_NET" -o eth+ -j MASQUERADE
 netredirect=$(nslookup netredirect | awk -F': ' 'NR==6 {print $2}')
 iptables -t nat -A PREROUTING -d 166.111.204.120 -j DNAT --to ${netredirect}
 iptables -t nat -A PREROUTING -d 101.6.4.100 -j DNAT --to ${netredirect}
+iptables -t nat -A PREROUTING -d 101.6.6.219 -j DNAT --to ${netredirect}
 
 # Update file attributes
 chmod 600 /etc/ipsec.secrets /etc/ppp/chap-secrets /etc/ipsec.d/passwd
