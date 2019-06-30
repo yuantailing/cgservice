@@ -1,6 +1,7 @@
 /.env
 /apache2/conf/sites-available/
 /vsftpd/conf/vusers.txt
+/pyftpd/ftp/settings.py
 /netredirect/conf/sites-available/
 /openvpn/conf/settings.py
 /openvpn/conf/server.key

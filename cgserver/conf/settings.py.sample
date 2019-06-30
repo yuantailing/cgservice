@@ -125,6 +125,7 @@ USE_TZ = True
 
 STATIC_URL = '/serverlist/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
 
 SESSION_COOKIE_NAME = 'serverlist-sessionid'
 CSRF_COOKIE_NAME = 'serverlist-csrftoken'
@@ -133,6 +134,7 @@ GITHUB_CLIENT_ID = '0254755de5a27276d6f4'
 GITHUB_CLIENT_SECRET = ''
 GITHUB_PERSONAL_ACCESS_TOKEN = ''
 VPN_CLIENT_SECRET = 'secret'
+FTP_CLIENT_SECRET = 'secret'
 CGNAS_API_SECRET = 'secret'
 
 PPTP_USERNAME = os.environ.get('PPTP_CLIENT')

@@ -1,0 +1,4 @@
+BIND_PORT = 21
+CGSERVER_AUTH_URL = 'https://cg.cs.tsinghua.edu.cn/serverlist/ftpauth'
+CGSERVER_INSECURE_CHECK_URL = 'https://cg.cs.tsinghua.edu.cn/serverlist/ftpinsecurecheck'
+CLIENT_SECRET = 'secret'
