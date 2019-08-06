@@ -14,16 +14,6 @@ services:
       - "80:80"
       - "443:443"
 
-  vsftpd:
-    build: vsftpd
-    restart: always
-    environment:
-      - SSL_ENABLE=${FTP_SSL_ENABLE}
-    volumes:
-      - ftp:/srv/ftp
-      - letsencrypt:/etc/letsencrypt:ro
-    network_mode: host
-
   pyftpd:
     build: pyftpd
     restart: always

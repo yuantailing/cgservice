@@ -16,9 +16,8 @@ ENV LANG=en_US.UTF-8 PYTHONIOENCODING=utf-8
 RUN pip3 install requests git+https://github.com/yuantailing/pyftpdlib.git@patch-1 && \
 	rm -rf ~/.cache/pip
 
+COPY ftp /opt/ftp
+
 RUN useradd -u10021 -m ftp
 
-COPY ftp /opt/ftp
-COPY runscript.sh /runscript.sh
-
-CMD ["/runscript.sh"]
+CMD ["python3", "/opt/ftp/main.py"]

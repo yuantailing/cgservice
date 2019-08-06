@@ -1,6 +1,7 @@
 import logging
 import OpenSSL
 import os
+import pwd
 import requests
 import settings
 
@@ -21,14 +22,14 @@ class CgAuthorizer(DummyAuthorizer):
         None.
         """
         res = requests.post(settings.CGSERVER_AUTH_URL,
-                            data={'username': username, 'password': password, 'client_secret': settings.CLIENT_SECRET})
+                            data={'username': username, 'password': password, 'peerip': handler.socket.getpeername()[0], 'client_secret': settings.CLIENT_SECRET})
         res.raise_for_status()
         data = res.json()
         if data['error']:
             if username == 'anonymous':
-                msg = "Anonymous access not allowed."
+                msg = 'Anonymous access not allowed.'
             else:
-                msg = "Authentication failed."
+                msg = 'Authentication failed.'
             raise AuthenticationFailed(msg)
         cgperms = data['perms']
 
@@ -87,9 +88,27 @@ class CgAuthorizer(DummyAuthorizer):
                         flag = flag or perm in 'elm'
         return flag
 
+    def impersonate_user(self, username, password):
+        """Change process effective user/group ids to reflect
+        logged in user.
+        """
+        try:
+            pwdstruct = pwd.getpwnam('ftp')
+        except KeyError:
+            raise AuthorizerError(self.msg_no_such_user)
+        else:
+            os.setegid(pwdstruct.pw_gid)
+            os.seteuid(pwdstruct.pw_uid)
+
 
 def get_cg_handler(Handler):
     class CgHandler(Handler):
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+            for fact in ['unix.mode', 'unix.uid', 'unix.gid']:
+                if fact in self._available_facts:
+                    self._current_facts.append(fact)
+
         def ftp_OPTS(self, line):
             if line.upper() == 'UTF8 ON':
                 self.respond('200 Always in UTF8 mode.')
@@ -99,26 +118,28 @@ def get_cg_handler(Handler):
         def ftp_USER(self, line):
             if not isinstance(self.socket, OpenSSL.SSL.Connection):
                 res = requests.post(settings.CGSERVER_INSECURE_CHECK_URL,
-                                    data={'username': line, 'client_secret': settings.CLIENT_SECRET})
+                                    data={'username': line, 'peerip': self.socket.getpeername()[0], 'client_secret': settings.CLIENT_SECRET})
                 res.raise_for_status()
                 data = res.json()
                 if data['error'] == 4:
-                    self.respond('401 FTP protocol prohibited, enforcing TLS.', logfun=logger.info)
+                    self.respond('530 FTPS (SSL/TLS) required for security reasons.', logfun=logger.info)
+                    self.close_when_done()
                     return
             return super().ftp_USER(line)
+
     return CgHandler
 
 
 if __name__ == '__main__':
-    if os.environ.get('SSL_ENABLE', '0') == '1':
+    if settings.FTP_TLS_ENABLE:
         handler = get_cg_handler(TLS_FTPHandler)
-        handler.certfile = os.path.expanduser('~/certs/fullchain.pem')
-        handler.keyfile = os.path.expanduser('~/certs/privkey.pem')
+        handler.certfile = settings.FTP_TLS_CERTFILE
+        handler.keyfile = settings.FTP_TLS_KEYFILE
     else:
         handler = get_cg_handler(FTPHandler)
-    handler.authorizer = CgAuthorizer('/srv/ftp')
+    handler.authorizer = CgAuthorizer(settings.FTP_ROOT)
     handler.use_gmt_times = True
 
     logging.basicConfig(level=logging.INFO)
-    server = ThreadedFTPServer(('', settings.BIND_PORT), handler)
+    server = ThreadedFTPServer(('', settings.FTP_BIND_PORT), handler)
     server.serve_forever()
