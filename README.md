@@ -4,7 +4,7 @@ Run all services in a docker composer.
 
 ## 概述
 
-1. vsftpd 是 FTP 服务，用于上传文件到网站目录，开放 FTP 端口
+1. pyftpd 是 FTP 服务，用于上传文件到网站目录，开放 FTP 端口
 1. apache2 用于托管网站（根据域名区分），开放 HTTP、HTTPS 端口
 1. pptp、l2tp、openvpn 是几个 VPN 服务，开放各自的端口
 1. netredirect 用于 VPN 重定向，VPN 把目的地址为 net.tsinghua.edu.cn 的流量重定向到这里，避免用户通过 VPN 意外“断开连接”
@@ -14,7 +14,7 @@ Run all services in a docker composer.
 1. cgserver 是另一项 web 服务，并提供 openvpn 的认证，用 apache2 转发
 1. csvn 是 SVN 服务，用 apache2 转发
 1. download 是 fork 自 [Download9](https://download.net9.org) 的离线下载服务，用 apache2 转发
-1. letsencrypt 用于签署 SSL 证书，使得 apache2 用 HTTPS，vsftpd 用 FTPS
+1. letsencrypt 用于签署 SSL 证书，使得 apache2 用 HTTPS，pyftpd 用 FTPS
 1. backup 用于备份 ftp、svn 等数据卷的历史版本
 1. 网络做了隔离，前端的 apache2 不能跟后端的 mysql 通信，各个 VPN 之间也不能通过内网通信
 1. docker-compose 用于构建和管理这些服务，一键启动和停止整批服务
@@ -29,7 +29,7 @@ Run all services in a docker composer.
    ```sh
    $ cp .env.sample .env && \
        cp -r apache2/conf/sites-available.sample/ apache2/conf/sites-available/ && \
-       cp vsftpd/conf/vusers.txt.sample vsftpd/conf/vusers.txt && \
+       cp pyftpd/ftp/settings.py.sample pyftpd/ftp/settings.py && \
        cp -r netredirect/conf/sites-available.sample netredirect/conf/sites-available && \
        cp openvpn/conf/settings.py.sample openvpn/conf/settings.py && \
        cp openvpn/conf/server.key.sample openvpn/conf/server.key && \
@@ -38,7 +38,7 @@ Run all services in a docker composer.
        cp -r backup/exclude.sample backup/exclude && \
        cp -r backup/ignore.sample backup/ignore
 
-   $ chmod 600 .env vsftpd/conf/vusers.txt openvpn/conf/settings.py \
+   $ chmod 600 .env pyftpd/ftp/settings.py openvpn/conf/settings.py \
        openvpn/conf/server.key cgserver/conf/settings.py
 
    $ chmod 700 php/secret
@@ -73,8 +73,7 @@ Run all services in a docker composer.
 You should edit configs to solve following issues:
 
 1. Apache2 `ServerName` is not properly configured, so you will always visit the default website.
-1. Ensure ftp user roots exist and have the proper owner, or vsftpd will fail.
-1. The default vsftpd passwords are unsafe.
+1. Ensure ftp user root has the proper owner, or pyftpd will fail.
 1. The default pptp password and l2tp password are unsafe.
 1. L2tp needs to oad the IPsec af_key kernel module on the Docker host: `sudo modprobe af_key`.
 1. OpenVPN key file is broken and openvpn will fail. Please use the correct key file.
@@ -86,7 +85,7 @@ You should edit configs to solve following issues:
 1. Configure GitHub OAuth and initialize database for download.
 1. Letsencrypt domain name is not properly configured, so it's failed to issue SSL certificates.
 1. Edit apache2 (and netredirect) *\*-le-ssl.conf* to use SSL, and edit HTTP configs to redirect to HTTPS.
-1. Edit *.env* to force vsftpd to use SSL connections.
+1. Edit *.env* to force pyftpd to use SSL connections.
 1. If your server is out of Tsinghua University, please change `ms-dns` to another DNS server in *pptp/conf/pptpd-options*.
 1. Add a service to run letsencrypt in cycle to renew certificates.
 1. Add a service to run backup in cycle.
@@ -99,13 +98,12 @@ You should edit configs to solve following issues:
 1. Build and run.
 1. After certificates are issued, we can further edit configs in *apache2/conf/sites-available/* to enable SSL and rewrite HTTP to HTTPS.
 
-### vsftpd
+### pyftpd
 
-1. Change passwords in *vsftpd/conf/vusers.txt*.
-1. (optional) Edit config files in *vsftpd/conf/vsftpd_user_conf/*.
+1. Change `CLIENT_SECRET` in *pyftpd/ftp/settings.py*.
 1. Build and run.
-1. Ensure user roots (*/srv/ftp/cscg* and */srv/ftp/oslab*) exists and have the proper owner. For the first run, you can run `docker-compose exec vsftpd bash -c 'mkdir -p /srv/ftp/{cscg,oslab} && chown ftp:ftp /srv/ftp/{cscg,oslab}'`
-1. After certificates are issued, we can edit config in *.env*, set `VSFTPD_SSL_ENABLE=1`.
+1. Ensure ftp root (*/srv/ftp*) has the proper owner. For the first run, you can run `docker-compose exec pyftpd chown ftp:ftp /srv/ftp`
+1. After certificates are issued, we can edit config in *.env*, set `FTP_SSL_ENABLE=1`.
 
 ### netredirect
 
@@ -218,6 +216,6 @@ Refer to post [#1](https://lists.debian.org/debian-kernel/2016/10/msg00029.html)
 - [x] Backup script.
 - [x] Should not put .well-known of *cgserver* and *svn* into ftp.
 - [ ] Mysql incremental backup.
-- [ ] Dynamic manage vsftpd user on web.
+- [x] Dynamic manage pyftpd users on web.
 - [x] A service like [Download9](https://git.net9.org/sast/Download9).
 - [ ] Fix PPTP for Ubuntu and fix L2TP for Mac.
