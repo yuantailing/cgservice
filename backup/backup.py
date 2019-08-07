@@ -80,7 +80,6 @@ def commit():
         logging.info('[BACKUP] {:s} : commit : success'.format(repo))
 
 
-
 def store(*, checksum, includegit):
     for repo in [o['repo'] for o in CONFIG]:
         logging.info('[BACKUP] {:s} : store : start'.format(repo))

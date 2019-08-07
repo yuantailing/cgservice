@@ -1,4 +1,5 @@
 import logging
+import logging.handlers
 import OpenSSL
 import os
 import pwd
@@ -21,8 +22,12 @@ class CgAuthorizer(DummyAuthorizer):
         password don't match the stored credentials, else return
         None.
         """
-        res = requests.post(settings.CGSERVER_AUTH_URL,
-                            data={'username': username, 'password': password, 'peerip': handler.socket.getpeername()[0], 'client_secret': settings.CLIENT_SECRET})
+        res = requests.post(settings.CGSERVER_AUTH_URL, data={
+            'username': username,
+            'password': password,
+            'peerip': handler.socket.getpeername()[0],
+            'client_secret': settings.CLIENT_SECRET,
+        })
         res.raise_for_status()
         data = res.json()
         if data['error']:
@@ -117,8 +122,11 @@ def get_cg_handler(Handler):
 
         def ftp_USER(self, line):
             if not isinstance(self.socket, OpenSSL.SSL.Connection):
-                res = requests.post(settings.CGSERVER_INSECURE_CHECK_URL,
-                                    data={'username': line, 'peerip': self.socket.getpeername()[0], 'client_secret': settings.CLIENT_SECRET})
+                res = requests.post(settings.CGSERVER_INSECURE_CHECK_URL, data={
+                    'username': line,
+                    'peerip': self.socket.getpeername()[0],
+                    'client_secret': settings.CLIENT_SECRET,
+                })
                 res.raise_for_status()
                 data = res.json()
                 if data['error'] == 4:
@@ -140,6 +148,9 @@ if __name__ == '__main__':
     handler.authorizer = CgAuthorizer(settings.FTP_ROOT)
     handler.use_gmt_times = True
 
-    logging.basicConfig(level=logging.INFO)
+    logging.basicConfig(level=logging.INFO, handlers=[
+        logging.handlers.TimedRotatingFileHandler(settings.FTP_LOG_FILE_PATH, when='W0'),
+        logging.StreamHandler()
+    ])
     server = ThreadedFTPServer(('', settings.FTP_BIND_PORT), handler)
     server.serve_forever()

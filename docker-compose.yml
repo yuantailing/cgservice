@@ -20,6 +20,7 @@ services:
     environment:
       - SSL_ENABLE=${FTP_SSL_ENABLE}
     volumes:
+      - pyftpd_log:/var/log/pyftpd
       - ftp:/srv/ftp
       - letsencrypt:/etc/letsencrypt:ro
     network_mode: host
@@ -231,6 +232,8 @@ volumes:
   apache2_log:
 
   ftp:
+
+  pyftpd_log:
 
   letsencrypt:
 

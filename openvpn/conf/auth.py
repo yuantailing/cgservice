@@ -30,17 +30,17 @@ try:
             client_secret=settings.CLIENT_SECRET,
         )
     )
-    assert True == res.ok
+    assert True is res.ok
     res = res.json()
     ok = 0 == res['error']
     exception = False
-except:
+except Exception:
     ok = False
     exception = True
 
 with open(settings.LOG_PATH, 'a') as f:
     json.dump(dict(time=time.time(), username=username, password='', untrusted_ip=untrusted_ip,
-        untrusted_port=untrusted_port, ok=ok, exception=exception), f, sort_keys=True)
+              untrusted_port=untrusted_port, ok=ok, exception=exception), f, sort_keys=True)
     f.write('\n')
 
 print('auth: ok={:d} exception={:d}'.format(ok, exception))
