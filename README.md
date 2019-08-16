@@ -35,11 +35,12 @@ Run all services in a docker composer.
        cp openvpn/conf/server.key.sample openvpn/conf/server.key && \
        cp -r php/secret.sample php/secret && \
        cp cgserver/conf/settings.py.sample cgserver/conf/settings.py && \
+       cp download/conf/settings.py.sample download/conf/settings.py && \
        cp -r backup/exclude.sample backup/exclude && \
        cp -r backup/ignore.sample backup/ignore
 
    $ chmod 600 .env pyftpd/ftp/settings.py openvpn/conf/settings.py \
-       openvpn/conf/server.key cgserver/conf/settings.py
+       openvpn/conf/server.key cgserver/conf/settings.py download/conf/settings.py
 
    $ chmod 700 php/secret
    ```
@@ -103,6 +104,7 @@ You should edit configs to solve following issues:
 1. Change `CLIENT_SECRET` in *pyftpd/ftp/settings.py*.
 1. Build and run.
 1. Ensure ftp root (*/srv/ftp*) has the proper owner. For the first run, you can run `docker-compose exec pyftpd chown ftp:ftp /srv/ftp`
+1. Ensure logdir (*/var/log/pyftpd*) has the proper owner. For the first run, you can run `docker-compose exec pyftpd chown ftp:ftp /var/log/pyftpd`
 1. After certificates are issued, we can edit config in *.env*, set `FTP_SSL_ENABLE=1`.
 
 ### netredirect
@@ -159,7 +161,7 @@ You should edit configs to solve following issues:
 
 ### download
 
-1. Fill `DOWNLOAD_GITHUB_CLIENT_ID` and `DOWNLOAD_GITHUB_CLIENT_SECRET` in *.env*.
+1. Fill `DOWNLOAD_GITHUB_CLIENT_ID` and `DOWNLOAD_GITHUB_CLIENT_SECRET` in *download/conf/settings.py*.
 1. Build and run.
 1. Run `docker-compose exec cgserver python3 manage.py migrate` to initialize database.
 

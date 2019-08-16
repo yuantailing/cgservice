@@ -129,7 +129,7 @@ def get_cg_handler(Handler):
                 })
                 res.raise_for_status()
                 data = res.json()
-                if data['error'] == 4:
+                if data['error'] != 0:
                     self.respond('530 FTPS (SSL/TLS) required for security reasons.', logfun=logger.info)
                     self.close_when_done()
                     return

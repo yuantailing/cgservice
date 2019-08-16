@@ -175,9 +175,6 @@ services:
   download:
     build: download
     restart: always
-    environment:
-      - GITHUB_CLIENT_ID=${DOWNLOAD_GITHUB_CLIENT_ID}
-      - GITHUB_CLIENT_SECRET=${DOWNLOAD_GITHUB_CLIENT_SECRET}
     volumes:
       - download:/mnt/download
     networks:

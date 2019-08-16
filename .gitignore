@@ -7,6 +7,7 @@
 /openvpn/conf/server.key
 /php/secret/
 /cgserver/conf/settings.py
+/download/conf/settings.py
 /backup/exclude/
 /backup/ignore/
 
