@@ -7,6 +7,7 @@ Run all services in a docker composer.
 1. pyftpd 是 FTP 服务，用于上传文件到网站目录，开放 FTP 端口
 1. apache2 用于托管网站（根据域名区分），开放 HTTP、HTTPS 端口
 1. pptp、l2tp、openvpn 是几个 VPN 服务，开放各自的端口
+1. radius 用于 pptp 用户认证
 1. netredirect 用于 VPN 重定向，VPN 把目的地址为 net.tsinghua.edu.cn 的流量重定向到这里，避免用户通过 VPN 意外“断开连接”
 1. mysql 是内网数据库服务
 1. phpmyadmin 是可视化管理 mysql 数据库的 web 服务，用 apache2 转发
@@ -30,6 +31,7 @@ Run all services in a docker composer.
    $ cp .env.sample .env && \
        cp -r apache2/conf/sites-available.sample/ apache2/conf/sites-available/ && \
        cp pyftpd/ftp/settings.py.sample pyftpd/ftp/settings.py && \
+       cp radius/conf/settings.py.sample radius/conf/settings.py && \
        cp -r netredirect/conf/sites-available.sample netredirect/conf/sites-available && \
        cp openvpn/conf/settings.py.sample openvpn/conf/settings.py && \
        cp openvpn/conf/server.key.sample openvpn/conf/server.key && \
@@ -39,7 +41,7 @@ Run all services in a docker composer.
        cp -r backup/exclude.sample backup/exclude && \
        cp -r backup/ignore.sample backup/ignore
 
-   $ chmod 600 .env pyftpd/ftp/settings.py openvpn/conf/settings.py \
+   $ chmod 600 .env pyftpd/ftp/settings.py radius/conf/settings.py openvpn/conf/settings.py \
        openvpn/conf/server.key cgserver/conf/settings.py download/conf/settings.py
 
    $ chmod 700 php/secret
@@ -75,7 +77,8 @@ You should edit configs to solve following issues:
 
 1. Apache2 `ServerName` is not properly configured, so you will always visit the default website.
 1. Ensure ftp user root has the proper owner, or pyftpd will fail.
-1. The default pptp password and l2tp password are unsafe.
+1. RADIUS `API_SECRET` is unsafe.
+1. The default l2tp password are unsafe.
 1. L2tp needs to oad the IPsec af_key kernel module on the Docker host: `sudo modprobe af_key`.
 1. OpenVPN key file is broken and openvpn will fail. Please use the correct key file.
 1. OpenVPN `CLIENT_SECRET` is unsafe.
@@ -87,7 +90,7 @@ You should edit configs to solve following issues:
 1. Letsencrypt domain name is not properly configured, so it's failed to issue SSL certificates.
 1. Edit apache2 (and netredirect) *\*-le-ssl.conf* to use SSL, and edit HTTP configs to redirect to HTTPS.
 1. Edit *.env* to force pyftpd to use SSL connections.
-1. If your server is out of Tsinghua University, please change `ms-dns` to another DNS server in *pptp/conf/pptpd-options*.
+1. If your server is out of Tsinghua University, please change `ms-dns` to another DNS server in pptp and l2tp options.
 1. Add a service to run letsencrypt in cycle to renew certificates.
 1. Add a service to run backup in cycle.
 
@@ -107,6 +110,11 @@ You should edit configs to solve following issues:
 1. Ensure logdir (*/var/log/pyftpd*) has the proper owner. For the first run, you can run `docker-compose exec pyftpd chown ftp:ftp /var/log/pyftpd`
 1. After certificates are issued, we can edit config in *.env*, set `FTP_SSL_ENABLE=1`.
 
+### radius
+
+1. Change `API_SECRET` in *radius/conf/settings.py*.
+1. Build and run.
+
 ### netredirect
 
 1. Build and run.
@@ -114,7 +122,6 @@ You should edit configs to solve following issues:
 
 ### pptp
 
-1. Change password in *.env*.
 1. Build and run.
 
 ### l2tp
@@ -221,3 +228,4 @@ Refer to post [#1](https://lists.debian.org/debian-kernel/2016/10/msg00029.html)
 - [x] Dynamic manage pyftpd users on web.
 - [x] A service like [Download9](https://git.net9.org/sast/Download9).
 - [ ] Fix PPTP for Ubuntu and fix L2TP for Mac.
+- [ ] Send emails once a backup fails.

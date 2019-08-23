@@ -1,0 +1,1 @@
+DEFAULT NT-Password := "%{echo:/usr/bin/python3 /opt/cgauth/fetch_nt_psw.py}"

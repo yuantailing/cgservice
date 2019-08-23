@@ -25,6 +25,13 @@ services:
       - letsencrypt:/etc/letsencrypt:ro
     network_mode: host
 
+  radius:
+    build: radius
+    restart: always
+    networks:
+      - cgserver
+      - pptp
+
   netredirect:
     build: netredirect
     restart: always
@@ -39,11 +46,9 @@ services:
   pptp:
     build: pptp
     depends_on:
+      - radius
       - netredirect
     restart: always
-    environment:
-      - CLIENT=${PPTP_CLIENT}
-      - SECRET=${PPTP_SECRET}
     networks:
       - pptp
     ports:
@@ -154,8 +159,6 @@ services:
       - mysql
     restart: always
     environment:
-      - PPTP_CLIENT=${PPTP_CLIENT}
-      - PPTP_SECRET=${PPTP_SECRET}
       - L2TP_VPN_IPSEC_PSK=${L2TP_VPN_IPSEC_PSK}
       - L2TP_VPN_USER=${L2TP_VPN_USER}
       - L2TP_VPN_PASSWORD=${L2TP_VPN_PASSWORD}

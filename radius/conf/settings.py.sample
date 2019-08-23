@@ -1,0 +1,2 @@
+API_URL = 'http://cgserver/serverlist/radius_api'
+API_SECRET = 'secret'
