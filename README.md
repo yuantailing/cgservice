@@ -7,7 +7,7 @@ Run all services in a docker composer.
 1. pyftpd 是 FTP 服务，用于上传文件到网站目录，开放 FTP 端口
 1. apache2 用于托管网站（根据域名区分），开放 HTTP、HTTPS 端口
 1. pptp、l2tp、openvpn 是几个 VPN 服务，开放各自的端口
-1. radius 用于 pptp 用户认证
+1. radius 用于 PPTP、IPSec、L2TP 用户认证
 1. netredirect 用于 VPN 重定向，VPN 把目的地址为 net.tsinghua.edu.cn 的流量重定向到这里，避免用户通过 VPN 意外“断开连接”
 1. mysql 是内网数据库服务
 1. phpmyadmin 是可视化管理 mysql 数据库的 web 服务，用 apache2 转发
@@ -78,8 +78,8 @@ You should edit configs to solve following issues:
 1. Apache2 `ServerName` is not properly configured, so you will always visit the default website.
 1. Ensure ftp user root has the proper owner, or pyftpd will fail.
 1. RADIUS `API_SECRET` is unsafe.
-1. The default l2tp password are unsafe.
-1. L2tp needs to oad the IPsec af_key kernel module on the Docker host: `sudo modprobe af_key`.
+1. The default IPSec pre-shared key is unsafe.
+1. PPTP needs to load the conntrack module (`modprobe ip_conntrack_pptp`) and IPSec needs to load the IPsec af_key module (`modprobe af_key`) on the host machine.
 1. OpenVPN key file is broken and openvpn will fail. Please use the correct key file.
 1. OpenVPN `CLIENT_SECRET` is unsafe.
 1. The default mysql root password is unsafe, please login to phpmyadmin and change it.
@@ -122,12 +122,13 @@ You should edit configs to solve following issues:
 
 ### pptp
 
+1. Load ip_conntrack_pptp on the host machine: `modprobe ip_conntrack_pptp`.
 1. Build and run.
 
 ### l2tp
 
-1. Load the IPsec af_key kernel module on the Docker host: `sudo modprobe af_key`.
-1. Change password in *.env*.
+1. Load the IPsec af_key kernel module on the Docker host: `modprobe af_key`.
+1. Change the pre-shared key in *.env*.
 1. Build and run.
 
 ### openvpn
@@ -198,10 +199,9 @@ Run `docker bulid backup` and `docker run --rm backup <action>`. `action` can be
 
 ## Troubleshooting
 
-If kernel version of host machine is greater than *linux-image-4.7.0-1-amd64*, you may have to run following script to allow GRE traffic forwarding for PPTP and L2TP.
+If kernel version of host machine is greater than *linux-image-4.7.0-1-amd64*, you may have to run following script to allow GRE traffic forwarding for PPTP.
 
    ```sh
-   modprobe ip_conntrack_pptp
    sysctl -w net.netfilter.nf_conntrack_helper=1
   ```
 
@@ -227,5 +227,7 @@ Refer to post [#1](https://lists.debian.org/debian-kernel/2016/10/msg00029.html)
 - [ ] Mysql incremental backup.
 - [x] Dynamic manage pyftpd users on web.
 - [x] A service like [Download9](https://git.net9.org/sast/Download9).
-- [ ] Fix PPTP for Ubuntu and fix L2TP for Mac.
+- [x] Fix PPTP for Ubuntu and fix L2TP for Mac.
+- [x] Add IPSec XAuth VPN.
+- [ ] Authenticate VPN users using RADIUS. (only openvpn doesn't use RADIUS now)
 - [ ] Send emails once a backup fails.

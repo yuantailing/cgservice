@@ -5,57 +5,29 @@ FROM debian:stretch
 RUN sed -i s/deb.debian.org/mirrors.tuna.tsinghua.edu.cn/g /etc/apt/sources.list && \
 	sed -i s/security.debian.org/mirrors.tuna.tsinghua.edu.cn/g /etc/apt/sources.list
 
-ENV SWAN_VER 3.26
-
-WORKDIR /opt/src
-
-RUN apt-get -yqq update \
-	&& DEBIAN_FRONTEND=noninteractive \
-		apt-get -yqq --no-install-recommends install \
-		wget dnsutils openssl ca-certificates kmod \
-		iproute gawk grep sed net-tools iptables \
-		bsdmainutils libcurl3-nss \
-		libnss3-tools libevent-dev libcap-ng0 xl2tpd \
-		libnss3-dev libnspr4-dev pkg-config libpam0g-dev \
-		libcap-ng-dev libcap-ng-utils libselinux1-dev \
-		libcurl4-nss-dev flex bison gcc make \
-	&& wget -t 3 -T 30 -nv -O libreswan.tar.gz "https://github.com/libreswan/libreswan/archive/v${SWAN_VER}.tar.gz" \
-	|| wget -t 3 -T 30 -nv -O libreswan.tar.gz "https://download.libreswan.org/libreswan-${SWAN_VER}.tar.gz" \
-	&& tar xzf libreswan.tar.gz \
-	&& rm -f libreswan.tar.gz \
-	&& cd "libreswan-${SWAN_VER}" \
-	&& sed -i 's/-lfreebl //' mk/config.mk \
-	&& sed -i '/blapi\.h/d' programs/pluto/keys.c \
-	&& printf 'WERROR_CFLAGS =\nUSE_DNSSEC = false\nUSE_DH31 = false\n' > Makefile.inc.local \
-	&& printf 'USE_GLIBC_KERN_FLIP_HEADERS = true\nUSE_SYSTEMD_WATCHDOG = false\n' >> Makefile.inc.local \
-	&& make -s base \
-	&& make -s install-base \
-	&& cd /opt/src \
-	&& rm -rf "/opt/src/libreswan-${SWAN_VER}" \
-	&& os_arch="$(dpkg --print-architecture)" \
-	&& deb_url="debian/pool/main/x/xl2tpd/xl2tpd_1.3.12-1.1_${os_arch}.deb" \
-	&& wget -t 3 -T 30 -nv -O xl2tpd.deb "https://mirrors.kernel.org/${deb_url}" \
-	|| wget -t 3 -T 30 -nv -O xl2tpd.deb "https://debian.osuosl.org/${deb_url}" \
-	&& apt-get -yqq --no-install-recommends install ./xl2tpd.deb \
-	&& rm -f xl2tpd.deb \
-	&& apt-get -yqq remove \
-		libnss3-dev libnspr4-dev pkg-config libpam0g-dev \
-		libcap-ng-dev libcap-ng-utils libselinux1-dev \
-		libcurl4-nss-dev flex bison gcc make \
-		perl-modules perl \
-	&& apt-get -yqq autoremove \
-	&& apt-get -y clean \
-	&& rm -rf /var/lib/apt/lists/*
-
 RUN apt-get update && \
-	apt-get install --no-install-recommends -y dnsutils && \
+	apt-get install --no-install-recommends -y ca-certificates curl dnsutils g++ git iptables libcharon-extra-plugins make strongswan xl2tpd && \
 	rm -rf /var/lib/apt/lists/*
 
-COPY ./runscript.sh /opt/src/runscript.sh
-RUN chmod 755 /opt/src/runscript.sh
+RUN git clone https://github.com/FreeRADIUS/freeradius-client.git /root/freeradius-client && \
+	cd /root/freeradius-client && \
+	./configure && \
+	make && \
+	make install && \
+	rm -rf /root/freeradius-client
 
-EXPOSE 500/udp 4500/udp
+RUN sed -i "s/localhost/radius/g;s/^radius_deadtime/#&/;\$aseqfile         /var/run/radius.seq" /usr/local/etc/radiusclient/radiusclient.conf && \
+	sed -i "s/.*ipv6/#&/;\$aINCLUDE /usr/local/etc/radiusclient/dictionary.microsoft" /usr/local/etc/radiusclient/dictionary && \
+	curl https://raw.githubusercontent.com/talkincode/ToughVPN/master/radius/dictionary/dictionary.microsoft -o /usr/local/etc/radiusclient/dictionary.microsoft && \
+	echo "radius testing123" >>/usr/local/etc/radiusclient/servers
+
+RUN sed -i "s/^\\s*# secret =/    secret = testing123/;s/^\\s*# server =/    server = radius/" /etc/strongswan.d/charon/eap-radius.conf
+
+COPY conf/ipsec.conf /etc/ipsec.conf
+COPY conf/xl2tpd.conf /etc/xl2tpd/xl2tpd.conf
+COPY conf/options.xl2tpd /etc/ppp/options.xl2tpd
+COPY runscript.sh /runscript.sh
 
 VOLUME ["/lib/modules"]
-
-CMD ["/opt/src/runscript.sh"]
+EXPOSE 500/udp 4500/udp
+CMD ["/runscript.sh"]

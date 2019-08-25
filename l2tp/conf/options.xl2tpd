@@ -1,0 +1,16 @@
+name l2tpd
+refuse-pap
+refuse-chap
+refuse-mschap
+require-mschap-v2
+ms-dns 166.111.8.28
+ms-dns 166.111.8.29
+proxyarp
+nodefaultroute
+lock
+nobsdcomp
+novj
+novjccomp
+logfile /var/log/l2tpd.log
+plugin radius.so
+radius-config-file /usr/local/etc/radiusclient/radiusclient.conf

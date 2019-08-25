@@ -31,6 +31,7 @@ services:
     networks:
       - cgserver
       - pptp
+      - l2tp
 
   netredirect:
     build: netredirect
@@ -64,14 +65,11 @@ services:
   l2tp:
     build: l2tp
     depends_on:
+      - radius
       - netredirect
     restart: always
     environment:
       - VPN_IPSEC_PSK=${L2TP_VPN_IPSEC_PSK}
-      - VPN_USER=${L2TP_VPN_USER}
-      - VPN_PASSWORD=${L2TP_VPN_PASSWORD}
-    volumes:
-      - /lib/modules:/lib/modules:ro
     networks:
       - l2tp
     ports:
@@ -160,8 +158,6 @@ services:
     restart: always
     environment:
       - L2TP_VPN_IPSEC_PSK=${L2TP_VPN_IPSEC_PSK}
-      - L2TP_VPN_USER=${L2TP_VPN_USER}
-      - L2TP_VPN_PASSWORD=${L2TP_VPN_PASSWORD}
     networks:
       - frontend
       - backend
