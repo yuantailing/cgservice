@@ -5,14 +5,14 @@ import settings
 import sys
 
 if __name__ == '__main__':
-    nas_ip = os.environ.get('NAS_IP_ADDRESS')
     username = os.environ.get('USER_NAME').strip('"')
+    nas_ip = os.environ.get('NAS_IP_ADDRESS')
     res = requests.post(
         settings.API_URL,
         data=dict(
             username=username,
-            key='NT-Password',
             nas_ip=nas_ip,
+            key='NT-Password',
             api_secret=settings.API_SECRET,
         )
     )

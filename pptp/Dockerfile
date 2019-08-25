@@ -16,7 +16,7 @@ RUN git clone https://github.com/FreeRADIUS/freeradius-client.git /root/freeradi
 
 RUN sed -i "s/localhost/radius/g;s/^radius_deadtime/#&/;\$aseqfile         /var/run/radius.seq" /usr/local/etc/radiusclient/radiusclient.conf && \
 	sed -i "s/.*ipv6/#&/;\$aINCLUDE /usr/local/etc/radiusclient/dictionary.microsoft" /usr/local/etc/radiusclient/dictionary && \
-	curl https://raw.githubusercontent.com/talkincode/ToughVPN/master/radius/dictionary/dictionary.microsoft -o /usr/local/etc/radiusclient/dictionary.microsoft && \
+	curl https://raw.githubusercontent.com/radcli/radcli/master/etc/dictionary.microsoft -o /usr/local/etc/radiusclient/dictionary.microsoft && \
 	echo "radius testing123" >>/usr/local/etc/radiusclient/servers
 
 RUN echo "localip 192.168.61.1\nremoteip 192.168.61.134-238" >>/etc/pptpd.conf && \

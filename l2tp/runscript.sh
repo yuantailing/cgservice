@@ -1,6 +1,6 @@
 #!/bin/bash -ex
 
-rm -f /var/run/charon.pid /var/run/starter.charon.pid /var/run/xl2tpd/xl2tpd.pid
+rm -f /var/run/charon.pid /var/run/starter.charon.pid /var/run/xl2tpd.pid
 
 echo -e ": PSK \"${VPN_IPSEC_PSK}\"" >>/etc/ipsec.secrets
 

@@ -7,7 +7,7 @@ Run all services in a docker composer.
 1. pyftpd 是 FTP 服务，用于上传文件到网站目录，开放 FTP 端口
 1. apache2 用于托管网站（根据域名区分），开放 HTTP、HTTPS 端口
 1. pptp、l2tp、openvpn 是几个 VPN 服务，开放各自的端口
-1. radius 用于 PPTP、IPSec、L2TP 用户认证
+1. radius 用于 PPTP、IPSec XAuth、L2TP 用户认证
 1. netredirect 用于 VPN 重定向，VPN 把目的地址为 net.tsinghua.edu.cn 的流量重定向到这里，避免用户通过 VPN 意外“断开连接”
 1. mysql 是内网数据库服务
 1. phpmyadmin 是可视化管理 mysql 数据库的 web 服务，用 apache2 转发

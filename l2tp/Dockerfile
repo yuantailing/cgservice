@@ -1,7 +1,5 @@
 FROM debian:stretch
 
-# modified from hwdsl2/docker-ipsec-vpn-server
-
 RUN sed -i s/deb.debian.org/mirrors.tuna.tsinghua.edu.cn/g /etc/apt/sources.list && \
 	sed -i s/security.debian.org/mirrors.tuna.tsinghua.edu.cn/g /etc/apt/sources.list
 
@@ -18,16 +16,15 @@ RUN git clone https://github.com/FreeRADIUS/freeradius-client.git /root/freeradi
 
 RUN sed -i "s/localhost/radius/g;s/^radius_deadtime/#&/;\$aseqfile         /var/run/radius.seq" /usr/local/etc/radiusclient/radiusclient.conf && \
 	sed -i "s/.*ipv6/#&/;\$aINCLUDE /usr/local/etc/radiusclient/dictionary.microsoft" /usr/local/etc/radiusclient/dictionary && \
-	curl https://raw.githubusercontent.com/talkincode/ToughVPN/master/radius/dictionary/dictionary.microsoft -o /usr/local/etc/radiusclient/dictionary.microsoft && \
+	curl https://raw.githubusercontent.com/radcli/radcli/master/etc/dictionary.microsoft -o /usr/local/etc/radiusclient/dictionary.microsoft && \
 	echo "radius testing123" >>/usr/local/etc/radiusclient/servers
 
-RUN sed -i "s/^\\s*# secret =/    secret = testing123/;s/^\\s*# server =/    server = radius/" /etc/strongswan.d/charon/eap-radius.conf
+RUN sed -i "s/^\\s*# accounting =.*/    accounting = yes/;s/^\\s*# secret =.*/    secret = testing123/;s/^\\s*# server =.*/    server = radius/" /etc/strongswan.d/charon/eap-radius.conf
 
 COPY conf/ipsec.conf /etc/ipsec.conf
 COPY conf/xl2tpd.conf /etc/xl2tpd/xl2tpd.conf
 COPY conf/options.xl2tpd /etc/ppp/options.xl2tpd
 COPY runscript.sh /runscript.sh
 
-VOLUME ["/lib/modules"]
 EXPOSE 500/udp 4500/udp
 CMD ["/runscript.sh"]
