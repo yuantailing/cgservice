@@ -230,4 +230,5 @@ Refer to post [#1](https://lists.debian.org/debian-kernel/2016/10/msg00029.html)
 - [x] Fix PPTP for Ubuntu and fix L2TP for Mac.
 - [x] Add IPSec XAuth VPN.
 - [ ] Authenticate VPN users using RADIUS. (only openvpn doesn't use RADIUS now)
+- [ ] Fix Calling-Station-Id for IPSec XAuth and L2TP, and fix Nas-Identifier for PPTP and L2TP.
 - [ ] Send emails once a backup fails.
