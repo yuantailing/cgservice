@@ -1,10 +1,10 @@
-FROM debian:stretch
+FROM debian:buster
 
 RUN sed -i s/deb.debian.org/mirrors.tuna.tsinghua.edu.cn/g /etc/apt/sources.list && \
 	sed -i s/security.debian.org/mirrors.tuna.tsinghua.edu.cn/g /etc/apt/sources.list
 
 RUN apt-get update && \
-	apt-get install --no-install-recommends -y gcc apache2 git python3 python3-pip python3-setuptools aria2 iptables && \
+	apt-get install --no-install-recommends -y apache2 aria2 gcc git iptables python3 python3-pip python3-setuptools && \
 	rm -rf /var/lib/apt/lists/*
 
 RUN pip3 install django\<2 requests pymysql && \
@@ -21,7 +21,7 @@ COPY conf/000-default.conf /etc/apache2/sites-available/000-default.conf
 
 WORKDIR /srv/download9/mysite
 RUN python3 manage.py collectstatic --noinput
-RUN a2enmod proxy proxy_http
+RUN a2enmod headers proxy proxy_http
 
 EXPOSE 80
 CMD ["/runscript.sh"]
