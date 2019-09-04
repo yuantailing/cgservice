@@ -136,6 +136,13 @@ You should edit configs to solve following issues:
 1. Create *openvpn/conf/server.key* (see *openvpn/conf/server.key.sample* for the format).
 1. Fill `CLIENT_SECRET` in *openvpn/conf/settings.py*.
 1. Build and run.
+1. If you don't have the key, you have to generate a CA and a certificate, and then update the `<CA>` section in client's conf.
+   ```sh
+   openssl req -x509 -subj '/CN=CGVPN' -days 3650 -nodes -keyout ca.key -out ca.crt
+   openssl req -new -subj '/CN=server' -nodes -keyout server.key -out server.csr
+   openssl x509 -req -CA ca.crt -CAkey ca.key -CAcreateserial -in server.csr -out server.crt -days 3650
+   ```
+
 
 ### mysql
 
@@ -203,7 +210,7 @@ If kernel version of host machine is greater than *linux-image-4.7.0-1-amd64*, y
 
    ```sh
    sysctl -w net.netfilter.nf_conntrack_helper=1
-  ```
+   ```
 
 Refer to post [#1](https://lists.debian.org/debian-kernel/2016/10/msg00029.html) and [#2](https://forums.docker.com/t/solved-incoming-network-traffic-not-forwarding-to-container/43191).
 
@@ -216,7 +223,7 @@ Refer to post [#1](https://lists.debian.org/debian-kernel/2016/10/msg00029.html)
 - [x] Put ftp and mysql data into a Docker volume.
 - [x] Add OpenVPN protocol TCP.
 - [x] Make it easier to configure apache2.
-- [ ] Make it easier to configure openvpn.
+- [x] Make it easier to configure openvpn.
 - [x] OpenVPN communicate with cgserver through intranet.
 - [x] Add an automate script to generate configs (just copy sample configs).
 - [x] Make netredirect more friendly.
