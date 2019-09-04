@@ -1,4 +1,4 @@
-FROM debian:stretch
+FROM debian:buster
 
 RUN sed -i s/deb.debian.org/mirrors.tuna.tsinghua.edu.cn/g /etc/apt/sources.list && \
 	sed -i s/security.debian.org/mirrors.tuna.tsinghua.edu.cn/g /etc/apt/sources.list

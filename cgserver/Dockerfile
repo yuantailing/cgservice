@@ -1,10 +1,10 @@
-FROM debian:stretch
+FROM debian:buster
 
 RUN sed -i s/deb.debian.org/mirrors.tuna.tsinghua.edu.cn/g /etc/apt/sources.list && \
 	sed -i s/security.debian.org/mirrors.tuna.tsinghua.edu.cn/g /etc/apt/sources.list
 
 RUN apt-get update && \
-	apt-get install --no-install-recommends -y gcc apache2 git python3 python3-dev python3-pip python3-setuptools default-libmysqlclient-dev libapache2-mod-wsgi-py3 && \
+	apt-get install --no-install-recommends -y apache2 default-libmysqlclient-dev gcc git libapache2-mod-wsgi-py3 python3 python3-dev python3-pip python3-setuptools && \
 	rm -rf /var/lib/apt/lists/*
 
 RUN pip3 install boto3 django django-extensions mysqlclient requests && \
