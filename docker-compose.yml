@@ -132,6 +132,27 @@ services:
     networks:
       - backend
 
+  mongo:
+    restart: always
+    image: mongo
+    volumes:
+      - mongo:/data/db
+    healthcheck:
+      test: echo 'db.stats().ok' | mongo localhost:27017/test --quiet
+      interval: 10s
+      timeout: 10s
+      retries: 5
+    networks:
+      - mongo
+
+  redis:
+    restart: always
+    image: redis
+    volumes:
+      - redis:/data
+    networks:
+      - redis
+
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
     restart: always
@@ -158,6 +179,7 @@ services:
     restart: always
     environment:
       - L2TP_VPN_IPSEC_PSK=${L2TP_VPN_IPSEC_PSK}
+      - SHARELATEX_API_SECRET=${CGSERVER_SHARELATEX_API_SECRET}
     networks:
       - frontend
       - backend
@@ -170,6 +192,32 @@ services:
       - csvn:/var/csvn
     networks:
       - frontend
+
+  sharelatex:
+    build: sharelatex
+    restart: always
+    depends_on:
+      - mongo
+      - redis
+    networks:
+      - frontend
+      - mongo
+      - redis
+    volumes:
+      - sharelatex:/var/lib/sharelatex
+    environment:
+      CGSERVER_API_SECRET: ${CGSERVER_SHARELATEX_API_SECRET}
+      SHARELATEX_APP_NAME: Overleaf Community Edition
+      SHARELATEX_MONGO_URL: mongodb://mongo/sharelatex
+      SHARELATEX_REDIS_HOST: redis
+      REDIS_HOST: redis
+      ENABLED_LINKED_FILE_TYPES: 'url,project_file'
+      ENABLE_CONVERSIONS: 'true'
+      SHARELATEX_BEHIND_PROXY: 'true'
+      SHARELATEX_RESTRICT_INVITES_TO_EXISTING_ACCOUNTS: 'true'
+      SHARELATEX_ALLOW_PUBLIC_ACCESS: 'true'
+      SHARELATEX_ALLOW_ANONYMOUS_READ_AND_WRITE_SHARING: 'true'
+      DOCKER_RUNNER: 'false'
 
   download:
     build: download
@@ -220,6 +268,10 @@ networks:
 
   openvpn_tcp:
 
+  mongo:
+
+  redis:
+
   cgserver:
 
   letsencrypt:
@@ -235,7 +287,13 @@ volumes:
 
   mysql:
 
+  mongo:
+
+  redis:
+
   csvn:
+
+  sharelatex:
 
   backup_cache:
 
