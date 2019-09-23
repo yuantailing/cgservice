@@ -6,11 +6,8 @@ RUN cd /var/www/sharelatex/web && \
 	git config user.name "root" && \
 	git config user.email "root@localhost" && \
 	git checkout package-lock.json && \
-	git pull && \
-	git fetch https://github.com/yuantailing/web-sharelatex.git subpath && \
-	git merge e409c39b31d5383eee6e89bd31b080bc1461e55a && \
-	git fetch https://github.com/yuantailing/web-sharelatex.git cgservice && \
-	git merge 811036ac10fa6efdd8b21f83da05aa0d9b0c4152 && \
+	git fetch https://github.com/yuantailing/web-sharelatex.git subpath cgservice && \
+	git merge e409c39b31d5383eee6e89bd31b080bc1461e55a 1e9779cce8aa4405c1325d3d5f3f9f54e6aeb1c9 && \
 	npm install
 
 RUN cd /var/www/sharelatex/clsi && \
@@ -27,8 +24,11 @@ RUN cd /var/www/sharelatex/web && \
 	/sbin/setuser www-data make -j`nproc` compile_full && \
 	/sbin/setuser www-data make -j`nproc` minify
 
-RUN sed -i "s/\\/project\\//\\/${SUBPATH}\\/project\\//g" /var/www/sharelatex/real-time/app/coffee/WebApiManager.coffee /var/www/sharelatex/document-updater/app/coffee/HistoryManager.coffee /var/www/sharelatex/document-updater/app/coffee/PersistenceManager.coffee && \
+RUN sed -i "s/\\/project\\//\\/${SUBPATH}\\/project\\//g" /var/www/sharelatex/real-time/app/coffee/WebApiManager.coffee /var/www/sharelatex/document-updater/app/coffee/PersistenceManager.coffee && \
 	sed -i "s/\\/user\\//\\/${SUBPATH}\\/user\\//g" /var/www/sharelatex/track-changes/app/coffee/WebApiManager.coffee && \
+	sed -i "/project_history/{n;s/enabled: true/enabled: false/}" /var/www/sharelatex/document-updater/config/settings.defaults.coffee && \
 	cd /var/www/sharelatex/real-time && npm run compile:app && \
 	cd /var/www/sharelatex/document-updater && npm run compile:app && \
 	cd /var/www/sharelatex/track-changes && npm run compile:app
+
+COPY 00_regen_sharelatex_secrets.sh /etc/my_init.d/00_regen_sharelatex_secrets.sh

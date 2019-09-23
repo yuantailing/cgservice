@@ -9,6 +9,7 @@
 /php/secret/
 /cgserver/conf/settings.py
 /download/conf/settings.py
+/sharelatex/00_regen_sharelatex_secrets.sh
 /backup/exclude/
 /backup/ignore/
 
