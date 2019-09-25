@@ -7,7 +7,7 @@ RUN cd /var/www/sharelatex/web && \
 	git config user.email "root@localhost" && \
 	git checkout package-lock.json && \
 	git fetch https://github.com/yuantailing/web-sharelatex.git subpath cgservice && \
-	git merge e409c39b31d5383eee6e89bd31b080bc1461e55a 1e9779cce8aa4405c1325d3d5f3f9f54e6aeb1c9 && \
+	git merge c96a8843996723d6ac85dafb0647853283a7c0df be5ca576d148acd957177c0bd04ef82b7dc493c3 && \
 	npm install
 
 RUN cd /var/www/sharelatex/clsi && \
@@ -19,6 +19,7 @@ RUN cd /var/www/sharelatex/clsi && \
 ENV SUBPATH=latex
 
 RUN cd /var/www/sharelatex/web && \
+	git ls-tree HEAD -r --name-only -z | xargs -I% -P`nproc` --null sed -i "s/\\/SHARELATEX\\/learn/https:\\/\\/overleaf.com\\/learn/g;s/\\/SHARELATEX\\/templates/https:\\/\\/overleaf.com\\/templates/g" % && \
 	git ls-tree HEAD -r --name-only -z | xargs -I% -P`nproc` --null sed -i "s/\\/SHARELATEX/\\/${SUBPATH}/g" % && \
 	sed -i "s/SHARELATEX/${SUBPATH}/g" app/src/Features/RealTimeProxy/RealTimeProxyRouter.js && \
 	/sbin/setuser www-data make -j`nproc` compile_full && \
