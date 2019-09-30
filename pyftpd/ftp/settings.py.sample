@@ -6,6 +6,6 @@ FTP_TLS_ENABLE = os.environ.get('SSL_ENABLE') == '1'
 FTP_TLS_CERTFILE = '/etc/letsencrypt/live/cgservice/fullchain.pem'
 FTP_TLS_KEYFILE = '/etc/letsencrypt/live/cgservice/privkey.pem'
 
-CGSERVER_AUTH_URL = 'https://cg.cs.tsinghua.edu.cn/serverlist/ftpauth'
-CGSERVER_INSECURE_CHECK_URL = 'https://cg.cs.tsinghua.edu.cn/serverlist/ftpinsecurecheck'
+CGSERVER_AUTH_URL = 'http://cgserver/serverlist/ftpauth'
+CGSERVER_INSECURE_CHECK_URL = 'http://cgserver/serverlist/ftpinsecurecheck'
 CLIENT_SECRET = 'secret'

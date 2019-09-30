@@ -19,11 +19,18 @@ services:
     restart: always
     environment:
       - SSL_ENABLE=${FTP_SSL_ENABLE}
+      - PASV_PORT_MIN=${FTP_PASV_PORT_MIN}
+      - PASV_PORT_MAX=${FTP_PASV_PORT_MAX}
     volumes:
       - pyftpd_log:/var/log/pyftpd
       - ftp:/srv/ftp
       - letsencrypt:/etc/letsencrypt:ro
-    network_mode: host
+    networks:
+      - cgserver
+    ports:
+      - "21:21"
+      - "2121:21"
+      - "${FTP_PASV_PORT_MIN}-${FTP_PASV_PORT_MAX}:${FTP_PASV_PORT_MIN}-${FTP_PASV_PORT_MAX}"
 
   radius:
     build: radius

@@ -7,7 +7,7 @@ RUN cd /var/www/sharelatex/web && \
 	git config user.email "root@localhost" && \
 	git checkout package-lock.json && \
 	git fetch https://github.com/yuantailing/web-sharelatex.git subpath cgservice && \
-	git merge c96a8843996723d6ac85dafb0647853283a7c0df be5ca576d148acd957177c0bd04ef82b7dc493c3 && \
+	git merge c96a8843996723d6ac85dafb0647853283a7c0df ed0cdee86e74ee9bee2fe1b127333f20b6687441 && \
 	npm install
 
 RUN cd /var/www/sharelatex/clsi && \
@@ -22,12 +22,14 @@ RUN cd /var/www/sharelatex/web && \
 	git ls-tree HEAD -r --name-only -z | xargs -I% -P`nproc` --null sed -i "s/\\/SHARELATEX\\/learn/https:\\/\\/overleaf.com\\/learn/g;s/\\/SHARELATEX\\/templates/https:\\/\\/overleaf.com\\/templates/g" % && \
 	git ls-tree HEAD -r --name-only -z | xargs -I% -P`nproc` --null sed -i "s/\\/SHARELATEX/\\/${SUBPATH}/g" % && \
 	sed -i "s/SHARELATEX/${SUBPATH}/g" app/src/Features/RealTimeProxy/RealTimeProxyRouter.js && \
+	sed -i "s/https:\/\/cg.cs.tsinghua.edu.cn\/serverlist\//http:\/\/cgserver\/serverlist\//g" app/src/Features/Authentication/AuthenticationManager.js && \
 	/sbin/setuser www-data make -j`nproc` compile_full && \
 	/sbin/setuser www-data make -j`nproc` minify
 
 RUN sed -i "s/\\/project\\//\\/${SUBPATH}\\/project\\//g" /var/www/sharelatex/real-time/app/coffee/WebApiManager.coffee /var/www/sharelatex/document-updater/app/coffee/PersistenceManager.coffee && \
 	sed -i "s/\\/user\\//\\/${SUBPATH}\\/user\\//g" /var/www/sharelatex/track-changes/app/coffee/WebApiManager.coffee && \
 	sed -i "/project_history/{n;s/enabled: true/enabled: false/}" /var/www/sharelatex/document-updater/config/settings.defaults.coffee && \
+	sed -i "s/'websocket', //g" /var/www/sharelatex/real-time/app.coffee && \
 	cd /var/www/sharelatex/real-time && npm run compile:app && \
 	cd /var/www/sharelatex/document-updater && npm run compile:app && \
 	cd /var/www/sharelatex/track-changes && npm run compile:app

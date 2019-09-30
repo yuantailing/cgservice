@@ -14,7 +14,6 @@ iptables -t mangle -A FORWARD -s 192.168.46.0/23 -p tcp -m tcp --tcp-flags SYN,A
 netredirect=$(nslookup netredirect | awk -F': ' 'NR==6 {print $2}')
 iptables -t nat -A PREROUTING -d 166.111.204.120 -j DNAT --to ${netredirect}
 iptables -t nat -A PREROUTING -d 101.6.4.100 -j DNAT --to ${netredirect}
-iptables -t nat -A PREROUTING -d 101.6.6.219 -j DNAT --to ${netredirect}
 
 xl2tpd -D -c /etc/xl2tpd/xl2tpd.conf &
 ipsec start --nofork 2>&1
