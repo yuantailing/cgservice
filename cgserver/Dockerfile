@@ -12,7 +12,7 @@ RUN pip3 install boto3 django django-extensions mysqlclient requests && \
 
 RUN git clone https://github.com/yuantailing/cgserver.git /opt/cgserver && \
 	cd /opt/cgserver && \
-	git checkout 5226f4082b1d34c7a6d064064a723b028a4ea7b2 && \
+	git checkout 2f2996ff4488064fe0f06b125beae06b85f85e03 && \
 	pip3 install -r cgserver/requirements.txt && \
 	rm -rf ~/.cache/pip
 

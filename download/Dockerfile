@@ -12,7 +12,7 @@ RUN pip3 install django\<2 requests pymysql && \
 
 RUN git clone --single-branch -b cg https://github.com/yuantailing/download9.git /srv/download9 && \
 	cd /srv/download9 && \
-	git checkout ae390562b7982f0cf38a97270c673350d4ef62f3
+	git checkout 6b0714c706348d162f6fddcc57ee7d58af233144
 
 COPY runscript.sh /runscript.sh
 COPY conf/settings.py /srv/download9/mysite/mysite/settings.py

@@ -242,10 +242,8 @@ services:
     depends_on:
       - apache2
     environment:
-      - ROOTS=${LETSENCRYPT_ROOTS}
       - DOMAINS=${LETSENCRYPT_DOMAINS}
     volumes:
-      - ftp:/srv/ftp
       - letsencrypt:/etc/letsencrypt
     networks:
       - letsencrypt

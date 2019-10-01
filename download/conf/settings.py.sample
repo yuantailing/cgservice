@@ -27,7 +27,7 @@ SECRET_KEY = '&+8_v7d17^5@vn_4!9y8*97!)pzx151is_&g(a9-0a1_+%ge_^'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['cg.cs.tsinghua.edu.cn']
+ALLOWED_HOSTS = ['cg.cs.tsinghua.edu.cn', 'www.thucg.com']
 
 
 # Application definition

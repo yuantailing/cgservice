@@ -10,6 +10,7 @@
 /cgserver/conf/settings.py
 /download/conf/settings.py
 /sharelatex/00_regen_sharelatex_secrets.sh
+/letsencrypt/.aws/config
 /backup/exclude/
 /backup/ignore/
 

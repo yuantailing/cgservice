@@ -1,4 +1,4 @@
-FROM yuantailing/sharelatex:scheme-full
+FROM yuantailing/sharelatex:2.0-beta-2-scheme-full
 
 RUN ln -s /var/www/sharelatex/clsi/bin/synctex /opt/synctex
 
@@ -29,7 +29,6 @@ RUN cd /var/www/sharelatex/web && \
 RUN sed -i "s/\\/project\\//\\/${SUBPATH}\\/project\\//g" /var/www/sharelatex/real-time/app/coffee/WebApiManager.coffee /var/www/sharelatex/document-updater/app/coffee/PersistenceManager.coffee && \
 	sed -i "s/\\/user\\//\\/${SUBPATH}\\/user\\//g" /var/www/sharelatex/track-changes/app/coffee/WebApiManager.coffee && \
 	sed -i "/project_history/{n;s/enabled: true/enabled: false/}" /var/www/sharelatex/document-updater/config/settings.defaults.coffee && \
-	sed -i "s/'websocket', //g" /var/www/sharelatex/real-time/app.coffee && \
 	cd /var/www/sharelatex/real-time && npm run compile:app && \
 	cd /var/www/sharelatex/document-updater && npm run compile:app && \
 	cd /var/www/sharelatex/track-changes && npm run compile:app
