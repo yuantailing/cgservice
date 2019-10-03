@@ -133,7 +133,7 @@ services:
     command: --default-authentication-plugin=mysql_native_password
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: password
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
     volumes:
       - mysql:/var/lib/mysql
     networks:
@@ -185,6 +185,8 @@ services:
       - mysql
     restart: always
     environment:
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
       - L2TP_VPN_IPSEC_PSK=${L2TP_VPN_IPSEC_PSK}
       - SHARELATEX_API_SECRET=${CGSERVER_SHARELATEX_API_SECRET}
     networks:
@@ -242,6 +244,8 @@ services:
     depends_on:
       - apache2
     environment:
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
       - DOMAINS=${LETSENCRYPT_DOMAINS}
     volumes:
       - letsencrypt:/etc/letsencrypt

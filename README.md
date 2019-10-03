@@ -4,8 +4,8 @@ Run all services in a docker composer.
 
 ## 概述
 
-1. pyftpd 是 FTP 服务，用于上传文件到网站目录，开放 FTP 端口
 1. apache2 用于托管网站（根据域名区分），开放 HTTP、HTTPS 端口
+1. pyftpd 是 FTP 服务，用于上传文件到网站目录，开放 FTP 端口
 1. pptp、l2tp、openvpn 是几个 VPN 服务，开放各自的端口
 1. radius 用于 PPTP、IPSec XAuth、L2TP 用户认证
 1. netredirect 用于 VPN 重定向，VPN 把目的地址为 net.tsinghua.edu.cn 的流量重定向到这里，避免用户通过 VPN 意外“断开连接”
@@ -13,6 +13,7 @@ Run all services in a docker composer.
 1. phpmyadmin 是可视化管理 mysql 数据库的 web 服务，用 apache2 转发
 1. php 是主页上唯一动态的部分，主页上的其它部分都是静态的
 1. cgserver 是另一项 web 服务，并提供 openvpn 的认证，用 apache2 转发
+1. sharelatex 是在线 LaTeX 协作站点，使用 cgserver 帐号，用 apache2 转发
 1. csvn 是 SVN 服务，用 apache2 转发
 1. download 是 fork 自 [Download9](https://download.net9.org) 的离线下载服务，用 apache2 转发
 1. letsencrypt 用于签署 SSL 证书，使得 apache2 用 HTTPS，pyftpd 用 FTPS
@@ -28,7 +29,7 @@ Run all services in a docker composer.
 1. Copy sample configs and make secret config files not globally visible.
 
    ```sh
-   $ cp .env.sample .env && \
+   cp .env.sample .env && \
        cp -r apache2/conf/sites-available.sample/ apache2/conf/sites-available/ && \
        cp pyftpd/ftp/settings.py.sample pyftpd/ftp/settings.py && \
        cp radius/conf/settings.py.sample radius/conf/settings.py && \
@@ -37,14 +38,15 @@ Run all services in a docker composer.
        cp openvpn/conf/server.key.sample openvpn/conf/server.key && \
        cp -r php/secret.sample php/secret && \
        cp cgserver/conf/settings.py.sample cgserver/conf/settings.py && \
+       cp sharelatex/00_regen_sharelatex_secrets.sh.sample sharelatex/00_regen_sharelatex_secrets.sh && \
        cp download/conf/settings.py.sample download/conf/settings.py && \
        cp -r backup/exclude.sample backup/exclude && \
        cp -r backup/ignore.sample backup/ignore
 
-   $ chmod 600 .env pyftpd/ftp/settings.py radius/conf/settings.py openvpn/conf/settings.py \
-       openvpn/conf/server.key cgserver/conf/settings.py download/conf/settings.py
+   chmod 600 .env pyftpd/ftp/settings.py radius/conf/settings.py openvpn/conf/settings.py openvpn/conf/server.key \
+       cgserver/conf/settings.py sharelatex/00_regen_sharelatex_secrets.sh download/conf/settings.py
 
-   $ chmod 700 php/secret
+   chmod 700 php/secret
    ```
 
 1. Build images
@@ -82,12 +84,14 @@ You should edit configs to solve following issues:
 1. PPTP needs to load the conntrack module (`modprobe ip_conntrack_pptp`) and IPSec needs to load the IPsec af_key module (`modprobe af_key`) on the host machine.
 1. OpenVPN key file is broken and openvpn will fail. Please use the correct key file.
 1. OpenVPN `CLIENT_SECRET` is unsafe.
-1. The default mysql root password is unsafe, please login to phpmyadmin and change it.
+1. The default mysql root password is empty, please login to phpmyadmin and change it.
 1. Create a database and db user, and then config cgserver to the correct database.
 1. Configure GitHub OAuth for cgserver.
+1. Fill correct AWS access key in *.env* to allow cgserver, letsencrypt, and backup to access AWS.
+1. Change `CRYPTO_RANDOM` in *sharelatex/00_regen_sharelatex_secrets.sh*.
+1. Change `CGSERVER_SHARELATEX_API_SECRET` in *.env*.
 1. The default svn admin password is unsafe, please login to svn and change it.
-1. Configure GitHub OAuth and initialize database for download.
-1. Letsencrypt domain name is not properly configured, so it's failed to issue SSL certificates.
+1. Configure GitHub OAuth and initialize database for cgdownload.
 1. Edit apache2 (and netredirect) *\*-le-ssl.conf* to use SSL, and edit HTTP configs to redirect to HTTPS.
 1. Edit *.env* to force pyftpd to use SSL connections.
 1. If your server is out of Tsinghua University, please change `ms-dns` to another DNS server in pptp and l2tp options.
@@ -133,7 +137,7 @@ You should edit configs to solve following issues:
 
 ### openvpn
 
-1. Create *openvpn/conf/server.key* (see *openvpn/conf/server.key.sample* for the format).
+1. Fill *openvpn/conf/server.key*.
 1. Fill `CLIENT_SECRET` in *openvpn/conf/settings.py*.
 1. Build and run.
 1. If you don't have the key, you have to generate a CA and a certificate, and then update the `<CA>` section in client's conf.
@@ -162,10 +166,16 @@ You should edit configs to solve following issues:
 
 1. Create a database and a user in database.
 1. Fill `SECRET_KEY`, `DEBUG`, `ALLOWED_HOSTS`, `DATABASES`, `GITHUB_CLIENT_SECRET`, `GITHUB_PERSONAL_ACCESS_TOKEN` and `VPN_CLIENT_SECRET` in *cgserver/conf/settings.py*.
+1. Fill `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` in *.env*.
 1. Build and run.
 1. Run `docker-compose exec cgserver python3 manage.py migrate` to initialize database.
 1. Run `docker-compose exec cgserver python3 manage.py createsuperuser` to a super user, who can login to Django administration.
 1. Login to Django administration (URI is /admin/) and add some server configs.
+
+### sharelatex
+
+1. Fill `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` and `CGSERVER_SHARELATEX_API_SECRET` in *.env*.
+2. Build and run.
 
 ### csvn
 
@@ -181,7 +191,7 @@ You should edit configs to solve following issues:
 
 ### letsencrypt
 
-1. Edit `LETSENCRYPT_*` in *.env*.
+1. Fill `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` and `LETSENCRYPT_DOMAINS*` in *.env*.
 1. Build and run.
 1. Update apache2 config files and reload apache2 by running `docker-compose exec apache2 apachectl -k graceful` and `docker-compose exec netredirect apachectl -k graceful`.
 

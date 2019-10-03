@@ -10,7 +10,5 @@ RUN apt-get update && \
 RUN pip3 install certbot certbot-dns-route53 && \
 	rm -rf ~/.cache/pip
 
-COPY .aws /root/.aws
-
 COPY runscript.py /runscript.py
 CMD ["/runscript.py"]
