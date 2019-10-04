@@ -112,6 +112,9 @@ def main():
     if action == 'shell':
         exit(call(['bash'] + sys.argv[2:]))
 
+    if action == 'aws':
+        exit(call(['/backup/backup_aws.sh']))
+
     lock_filename = os.path.join(BACKUP_STORAGE_ROOT, 'backup.lock')
     with open(lock_filename, 'x') as lockf:
         if action == 'nothing':

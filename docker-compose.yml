@@ -254,15 +254,29 @@ services:
 
   backup:
     build: backup
+    depends_on:
+      - mysql
+      - mongo
+    environment:
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+      - AWS_S3_REGION=${AWS_S3_REGION}
+      - AWS_S3_BUCKET=${AWS_S3_BUCKET}
+      - MYSQL_BACKUP_PASSWORD=${MYSQL_BACKUP_PASSWORD}
+      - BACKUP_PUBKEY=${BACKUP_PUBKEY}
     volumes:
       - ftp:/mnt/ftp:ro
+      - sharelatex:/mnt/sharelatex:ro
       - csvn:/mnt/csvn:ro
       - mysql:/mnt/mysql:ro
+      - mongo:/mnt/mongo:ro
       - backup_cache:/mnt/backup_cache
       - backup_storage:/mnt/backup_storage
-      - ./backup/backup.py:/backup.py:ro
       - ./backup/exclude:/etc/cgservice/backup/exclude:ro
       - ./backup/ignore:/etc/cgservice/backup/ignore:ro
+    networks:
+      - backend
+      - mongo
 
 networks:
   frontend:
