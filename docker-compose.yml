@@ -214,6 +214,7 @@ services:
       - redis
     volumes:
       - sharelatex:/var/lib/sharelatex
+      - /var/run/docker.sock:/var/run/docker.sock
     environment:
       CGSERVER_API_SECRET: ${CGSERVER_SHARELATEX_API_SECRET}
       SHARELATEX_APP_NAME: Overleaf Community Edition
@@ -226,7 +227,9 @@ services:
       SHARELATEX_RESTRICT_INVITES_TO_EXISTING_ACCOUNTS: 'true'
       SHARELATEX_ALLOW_PUBLIC_ACCESS: 'true'
       SHARELATEX_ALLOW_ANONYMOUS_READ_AND_WRITE_SHARING: 'true'
-      DOCKER_RUNNER: 'false'
+      DOCKER_RUNNER: 'true'
+      TEXLIVE_IMAGE: 'yuantailing/sharelatex-compiler:2019.1'
+      TEXLIVE_IMAGE_USER: 'www-data'
 
   download:
     build: download

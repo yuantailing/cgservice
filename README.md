@@ -174,8 +174,9 @@ You should edit configs to solve following issues:
 
 ### sharelatex
 
+1. Run `docker pull yuantailing/sharelatex-compiler:2019.1` or `docker build sharelatex/ -f sharelatex/Dockerfile.compiler -t yuantailing/sharelatex-compiler:2019.1`.
 1. Fill `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` and `CGSERVER_SHARELATEX_API_SECRET` in *.env*.
-2. Build and run.
+1. Build and run.
 
 ### csvn
 

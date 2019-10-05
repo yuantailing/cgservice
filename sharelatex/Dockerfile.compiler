@@ -1,0 +1,5 @@
+FROM yuantailing/sharelatex:2.0-beta-2-scheme-full
+
+RUN ln -s /var/www/sharelatex/clsi/bin/synctex /opt/synctex
+
+ENTRYPOINT []

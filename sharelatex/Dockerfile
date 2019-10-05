@@ -3,17 +3,16 @@ FROM yuantailing/sharelatex:2.0-beta-2-scheme-full
 RUN ln -s /var/www/sharelatex/clsi/bin/synctex /opt/synctex
 
 RUN cd /var/www/sharelatex/web && \
-	git config user.name "root" && \
-	git config user.email "root@localhost" && \
+	git config --global user.name "root" && \
+	git config --global user.email "root@localhost" && \
 	git checkout package-lock.json && \
 	git fetch https://github.com/yuantailing/web-sharelatex.git subpath cgservice && \
 	git merge c96a8843996723d6ac85dafb0647853283a7c0df ed0cdee86e74ee9bee2fe1b127333f20b6687441 && \
 	npm install
 
 RUN cd /var/www/sharelatex/clsi && \
-	git pull && \
-	git fetch https://github.com/yuantailing/clsi-sharelatex.git fix-synctex && \
-	git merge 60fd936798ee73270ad53e1f7cb439b16bfbc85d && \
+	git fetch https://github.com/yuantailing/clsi-sharelatex.git cgservice && \
+	git merge d9a92121c7b73b66528612a07a6bc438308c7648 && \
 	npm run compile:app
 
 ENV SUBPATH=latex
