@@ -2,12 +2,14 @@ FROM yuantailing/sharelatex:2.0-beta-2-scheme-full
 
 RUN ln -s /var/www/sharelatex/clsi/bin/synctex /opt/synctex
 
+RUN sed -i "s/expires .*\$/expires 1d;/g" -i /etc/nginx/sites-enabled/sharelatex.conf
+
 RUN cd /var/www/sharelatex/web && \
 	git config --global user.name "root" && \
 	git config --global user.email "root@localhost" && \
 	git checkout package-lock.json && \
 	git fetch https://github.com/yuantailing/web-sharelatex.git subpath cgservice && \
-	git merge c96a8843996723d6ac85dafb0647853283a7c0df ed0cdee86e74ee9bee2fe1b127333f20b6687441 && \
+	git merge c96a8843996723d6ac85dafb0647853283a7c0df 287fb7108500ca3f6cbc22c672323c55caed0826 && \
 	npm install
 
 RUN cd /var/www/sharelatex/clsi && \

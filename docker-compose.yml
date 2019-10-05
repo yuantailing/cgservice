@@ -216,7 +216,6 @@ services:
       - sharelatex:/var/lib/sharelatex
       - /var/run/docker.sock:/var/run/docker.sock
     environment:
-      CGSERVER_API_SECRET: ${CGSERVER_SHARELATEX_API_SECRET}
       SHARELATEX_APP_NAME: Overleaf Community Edition
       SHARELATEX_MONGO_URL: mongodb://mongo/sharelatex
       SHARELATEX_REDIS_HOST: redis
@@ -230,6 +229,8 @@ services:
       DOCKER_RUNNER: 'true'
       TEXLIVE_IMAGE: 'yuantailing/sharelatex-compiler:2019.1'
       TEXLIVE_IMAGE_USER: 'www-data'
+      LISTEN_ADDRESS: '0.0.0.0'
+      CGSERVER_API_SECRET: ${CGSERVER_SHARELATEX_API_SECRET}
 
   download:
     build: download
