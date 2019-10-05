@@ -6,22 +6,25 @@ rm -rf /backup/s3workspace/
 mkdir /backup/s3workspace/
 cd /backup/s3workspace/
 
-mkdir -p bucket/mysql/ bucket/mongo/ bucket/sharelatex/
+mkdir -p bucket/mysql/ bucket/mongo/ bucket/sharelatex/ bucket/redis/
 
 mysqldump -hmysql -ubackup -p"${MYSQL_BACKUP_PASSWORD}" --single-transaction --all-databases --ignore-table=cgserver.serverlist_clientreport >all-databases.sql
 /usr/local/bin/mongodump -h mongo
 tar cvf sharelatex.tar -C/mnt sharelatex/
+redis-cli -h redis SAVE
 tar cvf dump.tar dump/
 
 xz -0 all-databases.sql
 xz -0 dump.tar
 xz -0 sharelatex.tar
+xz -0 -c /mnt/redis/dump.rdb >dump.rdb.xz
 
 openssl rand 32 >/dev/shm/aes_key
 openssl rsautl -encrypt -in /dev/shm/aes_key -pubin -inkey <(echo "-----BEGIN PUBLIC KEY-----"; printenv BACKUP_PUBKEY; echo "-----END PUBLIC KEY-----") -out bucket/aes_key.enc
 openssl enc -e -aes-256-cbc -in all-databases.sql.xz -kfile /dev/shm/aes_key -out bucket/mysql/all-databases.sql.xz.enc
 openssl enc -e -aes-256-cbc -in dump.tar.xz -kfile /dev/shm/aes_key -out bucket/mongo/dump.tar.xz.enc
 openssl enc -e -aes-256-cbc -in sharelatex.tar.xz -kfile /dev/shm/aes_key -out bucket/sharelatex/sharelatex.tar.xz.enc
+openssl enc -e -aes-256-cbc -in dump.rdb.xz -kfile /dev/shm/aes_key -out bucket/redis/dump.rdb.xz.enc
 rm -f /dev/shm/aes_key
 
 s3cp() {

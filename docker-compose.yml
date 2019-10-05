@@ -273,7 +273,7 @@ services:
       - sharelatex:/mnt/sharelatex:ro
       - csvn:/mnt/csvn:ro
       - mysql:/mnt/mysql:ro
-      - mongo:/mnt/mongo:ro
+      - redis:/mnt/redis:ro
       - backup_cache:/mnt/backup_cache
       - backup_storage:/mnt/backup_storage
       - ./backup/exclude:/etc/cgservice/backup/exclude:ro
@@ -281,6 +281,7 @@ services:
     networks:
       - backend
       - mongo
+      - redis
 
 networks:
   frontend:
