@@ -216,7 +216,7 @@ services:
       - sharelatex:/var/lib/sharelatex
       - /var/run/docker.sock:/var/run/docker.sock
     environment:
-      SHARELATEX_APP_NAME: Overleaf Community Edition
+      SHARELATEX_APP_NAME: Overleaf Community Plus
       SHARELATEX_MONGO_URL: mongodb://mongo/sharelatex
       SHARELATEX_REDIS_HOST: redis
       REDIS_HOST: redis
@@ -231,6 +231,9 @@ services:
       TEXLIVE_IMAGE_USER: 'www-data'
       LISTEN_ADDRESS: '0.0.0.0'
       CGSERVER_API_SECRET: ${CGSERVER_SHARELATEX_API_SECRET}
+      GITHUB_CLIENT_ID: ${SHARELATEX_GITHUB_CLIENT_ID}
+      GITHUB_CLIENT_SECRET: ${SHARELATEX_GITHUB_CLIENT_SECRET}
+      GITHUB_PERSONAL_ACCESS_TOKEN: ${SHARELATEX_GITHUB_PERSONAL_ACCESS_TOKEN}
 
   download:
     build: download
