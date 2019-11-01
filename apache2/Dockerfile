@@ -19,6 +19,5 @@ RUN sed "s/ServerSignature On/ServerSignature Off/" -i /etc/apache2/conf-availab
 COPY conf/sites-available/*.conf /etc/apache2/sites-available/
 RUN cd /etc/apache2/sites-available/ && a2ensite $(find -type f -and -not -name "*default*")
 
-EXPOSE 80
-EXPOSE 443
+EXPOSE 80 443
 CMD sh -c "service cron start && apachectl -D FOREGROUND"
