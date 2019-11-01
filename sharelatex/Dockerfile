@@ -1,4 +1,4 @@
-FROM yuantailing/sharelatex:2.0-beta-2-scheme-full
+FROM yuantailing/sharelatex:2.0.0-scheme-full
 
 RUN sed -i s/archive.ubuntu.com/mirrors.tuna.tsinghua.edu.cn/g /etc/apt/sources.list && \
 	sed -i s/security.ubuntu.com/mirrors.tuna.tsinghua.edu.cn/g /etc/apt/sources.list
@@ -10,16 +10,16 @@ RUN apt-get update && \
 RUN pip3 install bibtexparser && \
 	rm -rf ~/.cache/pip
 
-RUN ln -s /var/www/sharelatex/clsi/bin/synctex /opt/synctex
-
 RUN sed -i "s/expires .*\$/expires 1d;/g" -i /etc/nginx/sites-enabled/sharelatex.conf
 
 RUN cd /var/www/sharelatex/web && \
 	git config --global user.name "root" && \
 	git config --global user.email "root@localhost" && \
 	git checkout package-lock.json && \
-	git fetch https://github.com/yuantailing/web-sharelatex.git subpath cgservice cgservice-subpath && \
-	git merge e2b6efcd49daa50311446f0d73666f5be6ef8c6d cb33e9864069f0cc93bde5637f54e793a361e1b3 9d2ca5ac8dc3b616aacd64f2029319df6bc4cfc4 && \
+	git remote add cgservice https://github.com/yuantailing/web-sharelatex.git && \
+	git fetch cgservice cgservice-subpath subpath cgservice && \
+	git checkout cgservice-subpath && git reset --hard 649b6410490636eba2210d70ce84b2ce2f6948bd && \
+	git merge efd96ca939535d14baa90f25c252919832def40b 42c4a5ee0093dd0bd95906f0426aa7a8b9f84316 && \
 	npm install
 
 RUN cd /var/www/sharelatex/clsi && \
