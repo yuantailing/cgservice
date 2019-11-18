@@ -9,8 +9,8 @@ cd /backup/s3workspace/
 mkdir -p bucket/mysql/ bucket/mongo/ bucket/sharelatex/ bucket/redis/
 
 mysqldump -hmysql -ubackup -p"${MYSQL_BACKUP_PASSWORD}" --single-transaction --all-databases --ignore-table=cgserver.serverlist_clientreport >all-databases.sql
-/usr/local/bin/mongodump -h mongo
-tar cvf sharelatex.tar -C/mnt sharelatex/
+mongodump -h mongo
+tar cvf sharelatex.tar -C/mnt --exclude='data/compiles/*' sharelatex/
 redis-cli -h redis SAVE
 tar cvf dump.tar dump/
 
@@ -33,7 +33,7 @@ s3cp() {
 
 s3cp || s3cp || s3cp
 
-rm -rf /bucket/s3workspace/
+rm -rf bucket/s3workspace/
 
 # How to decrypt
 #openssl rsautl -decrypt -in aes_key.enc -inkey id_rsa.pem -out aes_key
