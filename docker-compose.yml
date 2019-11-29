@@ -165,7 +165,7 @@ services:
     restart: always
     environment:
       PMA_HOST: mysql
-      PMA_ABSOLUTE_URI: /phpmyadmin/
+      PMA_ABSOLUTE_URI: https://localhost/backend/phpmyadmin/
     networks:
       - frontend
       - backend
