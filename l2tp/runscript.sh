@@ -16,6 +16,7 @@ iptables -A INPUT -s 59.66.0.0/16 -j ACCEPT
 iptables -A INPUT -s 101.5.0.0/16 -j ACCEPT
 iptables -A INPUT -s 101.6.0.0/16 -j ACCEPT
 iptables -A INPUT -s 183.172.0.0/15 -j ACCEPT
+iptables -A INPUT -s 118.229.0.0/19 -j ACCEPT
 iptables -A INPUT -p udp --dport 500 -j DROP
 iptables -A INPUT -p udp --dport 4500 -j DROP
 
