@@ -1,7 +1,9 @@
 import os
 
+FTP_MASQUERADE_ADDRESS = '166.111.68.30'
 FTP_BIND_PORT = 21
 FTP_ROOT = '/srv/ftp'
+FTP_LOG_FILE_PATH = '/var/log/pyftpd/pyftpd.log'
 FTP_TLS_ENABLE = os.environ.get('SSL_ENABLE') == '1'
 FTP_TLS_CERTFILE = '/etc/letsencrypt/live/cgservice/fullchain.pem'
 FTP_TLS_KEYFILE = '/etc/letsencrypt/live/cgservice/privkey.pem'

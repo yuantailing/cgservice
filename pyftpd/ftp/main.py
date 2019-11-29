@@ -146,6 +146,7 @@ if __name__ == '__main__':
     else:
         handler = get_cg_handler(FTPHandler)
     handler.authorizer = CgAuthorizer(settings.FTP_ROOT)
+    handler.masquerade_address = settings.FTP_MASQUERADE_ADDRESS
     handler.passive_ports = list(range(int(os.environ['PASV_PORT_MIN']), 1 + int(os.environ['PASV_PORT_MAX'])))
     handler.use_gmt_times = True
 
