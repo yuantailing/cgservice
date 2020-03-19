@@ -7,6 +7,7 @@ services:
     volumes:
       - apache2_log:/var/log/apache2
       - ftp:/srv/ftp:ro
+      - jittor-blog:/srv/jittor-blog:ro
       - letsencrypt:/etc/letsencrypt:ro
     networks:
       - frontend
@@ -331,3 +332,5 @@ volumes:
   backup_storage:
 
   download:
+
+  jittor-blog:
