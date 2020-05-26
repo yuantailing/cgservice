@@ -44,8 +44,6 @@ services:
   netredirect:
     build: netredirect
     restart: always
-    volumes:
-      - letsencrypt:/etc/letsencrypt:ro
     networks:
       - pptp
       - l2tp
