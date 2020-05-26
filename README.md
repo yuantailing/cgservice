@@ -155,7 +155,7 @@ You should edit configs to solve following issues:
 ### phpmyadmin
 
 1. Run.
-1. You can login to phpmyadmin in the default website (usually you can visit it by IP, and URI is /phpmyadmin/).
+1. You can login to phpmyadmin in the default website (usually you can visit it by IP, and URI is /backend/phpmyadmin/).
 
 ### php
 

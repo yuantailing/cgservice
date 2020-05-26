@@ -194,6 +194,8 @@ services:
       - frontend
       - backend
       - cgserver
+    extra_hosts:
+      - "api.github.com:${GITHUB_API_HOST}"
 
   csvn:
     build: csvn
@@ -213,6 +215,9 @@ services:
       - frontend
       - mongo
       - redis
+    extra_hosts:
+      - "api.github.com:${GITHUB_API_HOST}"
+
     volumes:
       - sharelatex:/var/lib/sharelatex
       - /var/run/docker.sock:/var/run/docker.sock
@@ -243,6 +248,8 @@ services:
       - download:/mnt/download
     networks:
       - frontend
+    extra_hosts:
+      - "api.github.com:${GITHUB_API_HOST}"
     cap_add:
       - NET_ADMIN
       - NET_RAW
