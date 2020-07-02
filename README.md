@@ -144,7 +144,7 @@ You should edit configs to solve following issues:
    ```sh
    openssl req -x509 -new -subj '/CN=CGVPN' -days 3650 -nodes -keyout ca.key -out ca.crt
    openssl req -new -subj '/CN=openvpn-server' -nodes -keyout server.key -out server.csr
-   openssl x509 -req -CA ca.crt -CAkey ca.key -CAcreateserial -in server.csr -days 3650 -extensions EXT -extfile <(printf "[EXT]\nkeyUsage=digitalSignature\nextendedKeyUsage=serverAuth\n") -out server.crt
+   openssl x509 -req -CA ca.crt -CAkey ca.key -CAcreateserial -in server.csr -days 3650 -extensions EXT -extfile <(printf "[EXT]\nkeyUsage=digitalSignature,keyEncipherment\nextendedKeyUsage=serverAuth\n") -out server.crt
    ```
 
 ### mysql
