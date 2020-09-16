@@ -1,11 +1,8 @@
-import fcntl
 import logging
 import operator
 import os
 import requests
 import settings
-import shutil
-import subprocess
 import urllib.parse
 
 

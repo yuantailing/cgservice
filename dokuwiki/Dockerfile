@@ -17,6 +17,10 @@ RUN git clone https://github.com/dwp-forge/tablewidth.git /srv/dokuwiki/lib/plug
 	cd /srv/dokuwiki/lib/plugins/tablewidth && \
 	git checkout 0cdc3206b9b0ce865f7d7424b21f4a5ca6d5ab8e
 
+RUN git clone https://github.com/selfthinker/dokuwiki_plugin_wrap.git /srv/dokuwiki/lib/plugins/wrap && \
+	cd /srv/dokuwiki/lib/plugins/wrap && \
+	git checkout 9ad5fdffdf97087aef0399a82b24053bf58e4298
+
 COPY conf/* /srv/dokuwiki/conf/
 
 COPY 000-default.conf /etc/apache2/sites-available/000-default.conf
