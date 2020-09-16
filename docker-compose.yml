@@ -239,6 +239,14 @@ services:
       GITHUB_CLIENT_SECRET: ${SHARELATEX_GITHUB_CLIENT_SECRET}
       GITHUB_PERSONAL_ACCESS_TOKEN: ${SHARELATEX_GITHUB_PERSONAL_ACCESS_TOKEN}
 
+  dokuwiki:
+    build: dokuwiki
+    restart: always
+    volumes:
+      - dokuwiki_data:/srv/dokuwiki/data
+    networks:
+      - frontend
+
   download:
     build: download
     restart: always
@@ -331,6 +339,8 @@ volumes:
   csvn:
 
   sharelatex:
+
+  dokuwiki_data:
 
   backup_cache:
 

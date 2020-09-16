@@ -14,6 +14,7 @@ Run all services in a docker composer.
 1. php 是主页上唯一动态的部分，主页上的其它部分都是静态的
 1. cgserver 是另一项 web 服务，并提供 openvpn 的认证，用 apache2 转发
 1. sharelatex 是在线 LaTeX 协作站点，使用 cgserver 帐号，用 apache2 转发
+1. dokuwiki 是在线 DokuWiki 维基站点，使用 cgserver 帐号，用 apache2 转发
 1. csvn 是 SVN 服务，用 apache2 转发
 1. download 是 fork 自 [Download9](https://download.net9.org) 的离线下载服务，用 apache2 转发
 1. letsencrypt 用于签署 SSL 证书，使得 apache2 用 HTTPS，pyftpd 用 FTPS
@@ -33,18 +34,18 @@ Run all services in a docker composer.
        cp -r apache2/conf/sites-available.sample/ apache2/conf/sites-available/ && \
        cp pyftpd/ftp/settings.py.sample pyftpd/ftp/settings.py && \
        cp radius/conf/settings.py.sample radius/conf/settings.py && \
-       cp -r netredirect/conf/sites-available.sample netredirect/conf/sites-available && \
        cp openvpn/conf/settings.py.sample openvpn/conf/settings.py && \
        cp openvpn/conf/server.key.sample openvpn/conf/server.key && \
        cp -r php/secret.sample php/secret && \
        cp cgserver/conf/settings.py.sample cgserver/conf/settings.py && \
        cp sharelatex/00_regen_sharelatex_secrets.sh.sample sharelatex/00_regen_sharelatex_secrets.sh && \
+       cp dokuwiki/scripts/settings.py.sample dokuwiki/scripts/settings.py && \
        cp download/conf/settings.py.sample download/conf/settings.py && \
        cp -r backup/exclude.sample backup/exclude && \
        cp -r backup/ignore.sample backup/ignore
 
    chmod 600 .env pyftpd/ftp/settings.py radius/conf/settings.py openvpn/conf/settings.py openvpn/conf/server.key \
-       cgserver/conf/settings.py sharelatex/00_regen_sharelatex_secrets.sh download/conf/settings.py
+       cgserver/conf/settings.py sharelatex/00_regen_sharelatex_secrets.sh dokuwiki/scripts/settings.py download/conf/settings.py
 
    chmod 700 php/secret
    ```
@@ -176,6 +177,11 @@ You should edit configs to solve following issues:
 
 1. Run `docker pull yuantailing/sharelatex-compiler:2019.1` or `docker build sharelatex/ -f sharelatex/Dockerfile.compiler -t yuantailing/sharelatex-compiler:2019.1`.
 1. Fill `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` and `CGSERVER_SHARELATEX_API_SECRET` in *.env*.
+1. Build and run.
+
+### dokuwiki
+
+1. Fill `CGNAS_API_SECRET` in *dokuwiki/scripts/settings.py*.
 1. Build and run.
 
 ### csvn

@@ -1,0 +1,2 @@
+CGNAS_API_URL = 'https://cg.cs.tsinghua.edu.cn/serverlist/cgnas_api'
+CGNAS_API_SECRET = 'secret'

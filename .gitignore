@@ -7,8 +7,9 @@
 /openvpn/conf/server.key
 /php/secret/
 /cgserver/conf/settings.py
-/download/conf/settings.py
 /sharelatex/00_regen_sharelatex_secrets.sh
+/dokuwiki/scripts/settings.py
+/download/conf/settings.py
 /backup/exclude/
 /backup/ignore/
 
