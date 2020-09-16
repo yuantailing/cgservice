@@ -6,3 +6,4 @@
 #
 *	@ALL	0
 *	@user	8
+*	@cgserver	8

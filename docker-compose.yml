@@ -188,6 +188,7 @@ services:
       - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
       - L2TP_VPN_IPSEC_PSK=${L2TP_VPN_IPSEC_PSK}
       - SHARELATEX_API_SECRET=${CGSERVER_SHARELATEX_API_SECRET}
+      - DOKUWIKI_API_SECRET=${CGSERVER_DOKUWIKI_API_SECRET}
     networks:
       - frontend
       - backend
@@ -246,6 +247,8 @@ services:
       - dokuwiki_data:/srv/dokuwiki/data
     networks:
       - frontend
+    environment:
+      CGSERVER_API_SECRET: ${CGSERVER_DOKUWIKI_API_SECRET}
 
   download:
     build: download

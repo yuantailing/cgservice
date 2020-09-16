@@ -1,0 +1,7 @@
+base   authcgserver
+author Tailing Yuan
+email  yuantailing@gmail.com
+date   2020-09-17
+name   Cgserver Auth Plugin
+desc   Provides user authentication against cgserver
+url    http://thucg.com/

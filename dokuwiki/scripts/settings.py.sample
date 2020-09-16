@@ -1,2 +1,0 @@
-CGNAS_API_URL = 'http://cgserver/serverlist/cgnas_api'
-CGNAS_API_SECRET = 'secret'

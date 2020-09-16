@@ -4,7 +4,7 @@ RUN sed -i s/deb.debian.org/mirrors.tuna.tsinghua.edu.cn/g /etc/apt/sources.list
 	sed -i s/security.debian.org/mirrors.tuna.tsinghua.edu.cn/g /etc/apt/sources.list
 
 RUN apt-get update && \
-	apt-get install --no-install-recommends -y apache2 curl git libapache2-mod-php php-xml python3 python3-requests unzip && \
+	apt-get install --no-install-recommends -y apache2 curl git libapache2-mod-php php-curl php-xml python3 python3-requests unzip && \
 	rm -rf /var/lib/apt/lists/*
 
 RUN cd /root && \
@@ -23,9 +23,13 @@ RUN git clone https://github.com/selfthinker/dokuwiki_plugin_wrap.git /srv/dokuw
 
 COPY conf/* /srv/dokuwiki/conf/
 
+COPY authcgserver/ /srv/dokuwiki/lib/plugins/authcgserver/
+RUN sed -i 's/authplain/authcgserver/g' /srv/dokuwiki/conf/dokuwiki.php
+
 COPY 000-default.conf /etc/apache2/sites-available/000-default.conf
 
-COPY scripts/ /root/scripts/
+COPY trusted_proxy.conf /etc/apache2/conf-available
+RUN a2enmod remoteip && a2enconf trusted_proxy
 
 EXPOSE 80
-CMD ["/root/scripts/cmd.sh"]
+CMD ["apachectl", "-D", "FOREGROUND"]
