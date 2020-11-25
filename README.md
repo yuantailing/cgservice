@@ -17,6 +17,7 @@ Run all services in a docker composer.
 1. dokuwiki 是在线 DokuWiki 维基站点，使用 cgserver 帐号，用 apache2 转发
 1. csvn 是 SVN 服务，用 apache2 转发
 1. download 是 fork 自 [Download9](https://download.net9.org) 的离线下载服务，用 apache2 转发
+1. honeypot 是蜜罐
 1. letsencrypt 用于签署 SSL 证书，使得 apache2 用 HTTPS，pyftpd 用 FTPS
 1. backup 用于备份 ftp、svn 等数据卷的历史版本
 1. 网络做了隔离，前端的 apache2 不能跟后端的 mysql 通信，各个 VPN 之间也不能通过内网通信
@@ -195,6 +196,11 @@ You should edit configs to solve following issues:
 1. Fill `DOWNLOAD_GITHUB_CLIENT_ID` and `DOWNLOAD_GITHUB_CLIENT_SECRET` in *download/conf/settings.py*.
 1. Build and run.
 1. Run `docker-compose exec cgserver python3 manage.py migrate` to initialize database.
+
+### honeypot
+
+1. Build and run.
+2. To redirect ssh to the honeypot, run `iptables -t nat -A PREROUTING -s 101.6.6.0/24 -p tcp -m tcp --dport 22 -j DNAT --to-destination 127.0.0.1:22999` and `sysctl -w net.ipv4.conf.all.route_localnet=1`.
 
 ### letsencrypt
 

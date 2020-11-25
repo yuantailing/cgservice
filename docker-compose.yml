@@ -263,6 +263,12 @@ services:
       - NET_ADMIN
       - NET_RAW
 
+  honeypot:
+    build: honeypot
+    restart: always
+    ports:
+      - "127.0.0.1:22999:22"
+
   letsencrypt:
     build: letsencrypt
     depends_on:
