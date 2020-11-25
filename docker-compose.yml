@@ -140,7 +140,7 @@ services:
 
   mongo:
     restart: always
-    image: mongo
+    image: mongo:4.0
     volumes:
       - mongo:/data/db
     healthcheck:
