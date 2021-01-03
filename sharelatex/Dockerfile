@@ -44,4 +44,11 @@ RUN sed -i "s/\\/project\\//\\/${SUBPATH}\\/project\\//g" /var/www/sharelatex/re
 	cd /var/www/sharelatex/document-updater && npm run compile:app && \
 	cd /var/www/sharelatex/track-changes && npm run compile:app
 
+RUN cd /var/www/sharelatex && \
+	git fetch origin master && \
+	git checkout d7a05d3bf7bed425e7270dcf62de57e82aaa6d26 hotfix/2.0.2/1-anon-upload.patch && \
+	/usr/bin/patch -i hotfix/2.0.2/1-anon-upload.patch -u web/app/src/Features/Uploads/UploadsRouter.js
+
+RUN sed -i 's/maxRequests: 200,/maxRequests: 10000,/' /var/www/sharelatex/web/app/src/Features/Uploads/UploadsRouter.js
+
 COPY 00_regen_sharelatex_secrets.sh /etc/my_init.d/00_regen_sharelatex_secrets.sh
