@@ -153,7 +153,7 @@ services:
 
   redis:
     restart: always
-    image: redis
+    image: redis:5
     volumes:
       - redis:/data
     networks:
@@ -232,7 +232,7 @@ services:
       SHARELATEX_ALLOW_PUBLIC_ACCESS: 'true'
       SHARELATEX_ALLOW_ANONYMOUS_READ_AND_WRITE_SHARING: 'true'
       DOCKER_RUNNER: 'true'
-      TEXLIVE_IMAGE: 'yuantailing/sharelatex-compiler:2019.1'
+      TEXLIVE_IMAGE: 'yuantailing/sharelatex-compiler:2020.1'
       TEXLIVE_IMAGE_USER: 'www-data'
       LISTEN_ADDRESS: '0.0.0.0'
       CGSERVER_API_SECRET: ${CGSERVER_SHARELATEX_API_SECRET}
